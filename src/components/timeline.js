@@ -12,7 +12,7 @@ import {
   FaCheckCircle,
 } from 'react-icons/fa';
 
-const EventTimeline = () => {
+const EventTimeline = ({ projectId }) => {
   const [expandedEvents, setExpandedEvents] = useState([]);
   const [timelineEvents, setTimelineEvents] = useState([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -23,6 +23,7 @@ const EventTimeline = () => {
     group: '',
     isDone: false, // Added a property to track task completion
   });
+  
 
   const toggleEvent = (id) => {
     setExpandedEvents((prev) =>

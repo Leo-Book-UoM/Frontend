@@ -11,13 +11,13 @@ const CourseCard = ({
   time = "N/A",
   date = "N/A",
   venue = "Unknown Venue",
-  projectid, // Receive projectid as a prop
+  projectId, // Receive projectid as a prop
 }) => {
   const router = useRouter();
 
   const handleCardClick = () => {
-    console.log("Clicked Project ID:", projectid); // Log the projectid
-    router.push(`/modules/project/projectContent?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}&projectId=${encodeURIComponent(projectid)}`
+    console.log("Clicked Project ID:", projectId); // Log the projectid
+    router.push(`/modules/project/projectContent?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}&projectId=${encodeURIComponent(projectId)}`
     );
   };
 

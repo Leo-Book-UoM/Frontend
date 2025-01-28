@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import {
-  FaChevronDown,
-  FaChevronUp,
   FaCalendarAlt,
   FaTasks,
   FaChartBar,
   FaUsers,
   FaPiggyBank,
   FaPlus,
-  FaTimes,
   FaCheckCircle,
+  FaTimes,
+  FaEdit
 } from 'react-icons/fa';
 import TaskCalendar from './taskCalender';
+import CreateTaskForm from './taskCreationForm';
 
 const EventTimeline = ({ projectId }) => {
   const [expandedEvents, setExpandedEvents] = useState([]);
   const [timelineEvents, setTimelineEvents] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editTaskId, setEditTaskId] = useState(null);
   const [newEvent, setNewEvent] = useState({
     date: '',
     title: '',
@@ -25,12 +27,6 @@ const EventTimeline = ({ projectId }) => {
     group: '',
     isDone: false,
   });
-
-  const toggleEvent = (id) => {
-    setExpandedEvents((prev) =>
-      prev.includes(id) ? prev.filter((eventId) => eventId !== id) : [...prev, id]
-    );
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,6 +36,40 @@ const EventTimeline = ({ projectId }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (newEvent.date && newEvent.title && newEvent.description && newEvent.group) {
+      if(isEditMode) {
+        try{
+          const response = await fetch (
+            `http://localhost:5000/api/editTask/${projectId}/${editTaskId}`,
+            {
+              method: 'PUT',
+              headers: {'content-Type' : 'application/json'},
+              body: JSON.stringify({
+                taskName: newEvent.title,
+                taskDescription: newEvent.description,
+                taskDate: newEvent.date,
+                markAsDone: newEvent.isDone ? 1 : 0,
+                taskCatagory: newEvent.group,
+              })
+            }
+          );
+          if(response.ok) {
+            setTimelineEvents((prev) => 
+              prev.map((task) => 
+                task.id === editTaskId
+            ? {...task, ...newEvent, id: editTaskId, isDone: task.isDone } : task
+              )
+            );
+            setIsEditMode(false);
+            setEditTaskId(null);
+            setNewEvent({ date: '', title: '', description: '', group: '' });
+            setIsFormVisible(false);
+          }else{
+            console.error('Failed to update task:', await response.json());
+          }
+        }catch(err) {
+          console.error('Error updating task:', err);
+        }
+      } else{
       const newTask = {
         projectid: projectId,
         taskId: timelineEvents.length + 1,
@@ -61,13 +91,6 @@ const EventTimeline = ({ projectId }) => {
 
         if (response.ok) {
           const result = await response.json();
-          const iconMap = {
-            'Project Planning': <FaTasks />,
-            Reporting: <FaChartBar />,
-            Meetings: <FaUsers />,
-            Treasuries: <FaPiggyBank />,
-          };
-
           const addedTask = {
             id: result.task.taskId,
             date: result.task.taskDate,
@@ -75,7 +98,6 @@ const EventTimeline = ({ projectId }) => {
             description: result.task.taskDescription,
             group: result.task.taskCatagory,
             isDone: result.task.markAsDone,
-            icon: iconMap[result.task.taskCatagory] || <FaCalendarAlt />,
           };
 
           // Add new task and update the timeline
@@ -93,13 +115,23 @@ const EventTimeline = ({ projectId }) => {
           setIsFormVisible(false);
         } else {
           console.error('Failed to create task:', await response.json());
-          alert('Error creating task. Please try again.');
         }
       } catch (err) {
         console.error('Error connecting to backend:', err);
-        alert('Unable to connect to the server.');
       }
     }
+  }
+  };
+  const handleEditTask = (task) => {
+    setNewEvent({
+      date: task.date,
+      title: task.title,
+      description: task.description,
+      group: task.group,
+    });
+    setEditTaskId(task.id);
+    setIsEditMode(true);
+    setIsFormVisible(true);
   };
 
   const toggleTaskDone = (id) => {
@@ -114,6 +146,31 @@ const EventTimeline = ({ projectId }) => {
       .filter((task) => !task.isDone && new Date(task.date) >= today)
       .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
     setCurrentTask(current);
+  };
+
+  const handleDeleteTask = async (id) => {
+    try{
+      const response = await fetch(`http://localhost:5000/api/deleteTask/${projectId}/${id}`,{
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setTimelineEvents((prev) => prev.filter((task) => task.id !== id));
+        console.log('Rask deleted successfully.');
+      }else {
+        console.error('Faild to delete task', await response.json());
+      }
+    }catch (err){
+      console.error('Error deleting task:', err);
+    }
+  };
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long', 
+      year: 'numeric',
+      month: 'long', 
+      day: 'numeric'
+    });
   };
 
   useEffect(() => {
@@ -152,15 +209,12 @@ const EventTimeline = ({ projectId }) => {
   }, [projectId]);
 
   const groupedEvents = timelineEvents.reduce((acc, event) => {
-    const groupName = event.group || 'Ungrouped'; // Fallback for undefined groups
+    const groupName = event.group || 'Ungrouped';
     if (!acc[groupName]) {
       acc[groupName] = [];
     }
     acc[groupName].push(event);
-  
-    // Sort the tasks within the group by their date (ascending)
     acc[groupName].sort((a, b) => new Date(a.date) - new Date(b.date));
-  
     return acc;
   }, {});
 
@@ -172,7 +226,7 @@ const EventTimeline = ({ projectId }) => {
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6">
           <h2 className="font-bold">Current Task:</h2>
           <p>
-            <strong>{currentTask.title}</strong> - {currentTask.date}
+            <strong>{currentTask.title}</strong> - {formatDate(currentTask.date)}
           </p>
           <p>{currentTask.description}</p>
         </div>
@@ -185,7 +239,7 @@ const EventTimeline = ({ projectId }) => {
               <div className="space-y-4">
                 {events.map((event, eventIndex) => (
                   <div
-                    key={`event-${event.id || `${eventIndex}-${event.date}-${event.title}`}`}
+                    key={`event-${event.id || `${eventIndex}-${formatDateevent.date}-${event.title}`}`}
                     className={`bg-gray-100 rounded-lg p-4 shadow ${
                       event.isDone ? 'opacity-50' : ''
                     }`}
@@ -193,14 +247,28 @@ const EventTimeline = ({ projectId }) => {
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className={event.isDone ? 'line-through' : ''}>{event.title}</h3>
-                        <p>{event.date}</p>
+                        <p>{formatDate(event.date)}</p>
                       </div>
+                      <div className="flex items-center space-x-4">
                       <button
                         onClick={() => toggleTaskDone(event.id)}
                         className="text-green-500 hover:text-green-600"
                       >
                         <FaCheckCircle size={20} />
                       </button>
+                      <button
+                        onClick={() => handleEditTask(event)}
+                        className="text-blue-500 hover:text-blue-600"
+                      >
+                        <FaEdit size={20} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTask(event.id)}
+                        className="text-red-500 hover:text-red-600"
+                      >
+                        <FaTimes size={20} />
+                      </button>
+                    </div>
                     </div>
                   </div>
                 ))}
@@ -221,75 +289,14 @@ const EventTimeline = ({ projectId }) => {
           <FaPlus size={24} />
         </button>
       </div>
-
-      {/* Modal */}
-      {isFormVisible && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96 shadow-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-800">Add New Task</h2>
-              <button
-                onClick={() => setIsFormVisible(false)}
-                className="text-gray-500 hover:text-gray-700"
-                title="Close"
-              >
-                <FaTimes size={20} />
-              </button>
-            </div>
-            <form onSubmit={handleFormSubmit}>
-              <div className="grid grid-cols-1 gap-4">
-                <input
-                  type="date"
-                  name="date"
-                  value={newEvent.date}
-                  onChange={handleInputChange}
-                  className="border rounded p-2 w-full"
-                  placeholder="Due Date"
-                  required
-                />
-                <input
-                  type="text"
-                  name="title"
-                  value={newEvent.title}
-                  onChange={handleInputChange}
-                  className="border rounded p-2 w-full"
-                  placeholder="Task Title"
-                  required
-                />
-                <textarea
-                  name="description"
-                  value={newEvent.description}
-                  onChange={handleInputChange}
-                  className="border rounded p-2 w-full"
-                  placeholder="Description"
-                  rows="3"
-                  required
-                />
-                <select
-                  name="group"
-                  value={newEvent.group}
-                  onChange={handleInputChange}
-                  className="border rounded p-2 w-full"
-                  required
-                >
-                  <option value="" disabled>
-                    Select Task Group
-                  </option>
-                  <option value="Project Planning">Project Planning</option>
-                  <option value="Reporting">Reporting</option>
-                  <option value="Meetings">Meetings</option>
-                  <option value="Treasuries">Treasuries</option>
-                </select>
-                <button
-                  type="submit"
-                  className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600"
-                >
-                  Add Event
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {/* Create Task Form */}
+       {isFormVisible && (
+        <CreateTaskForm
+         newEvent={newEvent}
+         handleInputChange={handleInputChange}
+         handleFormSubmit={handleFormSubmit}
+         setIsFormVisible={setIsFormVisible}
+        />
       )}
     </div>
   );

@@ -2,9 +2,21 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../mainlayout";
 import ProjectCard from "../../components/projectCard";
+import AddItemButton from "../../components/addItemButton";
+import CreateProjectForm from "../../components/projectCreationForm";
 
 const HomePage = () => {
   const [courses, setCourses] = useState([]);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    date: "",
+    venue: "",
+    description: "",
+    chairman: "",
+    secretary: "",
+    treasure: "",
+  });
 
   const fetchProjects = async () => {
     try {
@@ -23,6 +35,44 @@ const HomePage = () => {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent((prevEvent) => ({
+      ...prevEvent,
+      [name]: value,
+    }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:5000/api/projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newEvent),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create project");
+      }
+      const data = await response.json();
+      setCourses((prevCourses) => [...prevCourses, data]);
+      setIsFormVisible(false);
+      setNewEvent({
+        title: "",
+        date: "",
+        venue: "",
+        description: "",
+        chairman: "",
+        secretary: "",
+        treasure: "",
+      });
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
+  };
 
   return (
     <Layout>
@@ -67,8 +117,17 @@ const HomePage = () => {
               );
             })}
           </div>
+          <AddItemButton onClick={() => setIsFormVisible(true)} />
         </main>
       </div>
+      {isFormVisible && (
+        <CreateProjectForm
+          newEvent={newEvent}
+          handleInputChange={handleInputChange}
+          handleFormSubmit={handleFormSubmit}
+          setIsFormVisible={setIsFormVisible}
+        />
+      )}
     </Layout>
   );
 };

@@ -8,10 +8,13 @@ import {
   FaPlus,
   FaCheckCircle,
   FaTimes,
-  FaEdit
+  FaEdit,
+  FaChevronUp,
+  FaChevronDown
 } from 'react-icons/fa';
 import TaskCalendar from './taskCalender';
 import CreateTaskForm from './taskCreationForm';
+import AddItemButton from './addItemButton';
 
 const EventTimeline = ({ projectId }) => {
   const [expandedEvents, setExpandedEvents] = useState([]);
@@ -27,6 +30,12 @@ const EventTimeline = ({ projectId }) => {
     group: '',
     isDone: false,
   });
+
+  const toggleEvent = (id) => {
+    setExpandedEvents((prev) =>
+      prev.includes(id) ? prev.filter((eventId) => eventId !== id) : [...prev, id]
+    );
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -250,6 +259,9 @@ const EventTimeline = ({ projectId }) => {
                         <p>{formatDate(event.date)}</p>
                       </div>
                       <div className="flex items-center space-x-4">
+                      <button onClick={() => toggleEvent(event.id)} className='ml-4'>
+                        {expandedEvents.includes(event.id) ? <FaChevronUp/> : <FaChevronDown/>}
+                      </button>
                       <button
                         onClick={() => toggleTaskDone(event.id)}
                         className="text-green-500 hover:text-green-600"
@@ -270,6 +282,11 @@ const EventTimeline = ({ projectId }) => {
                       </button>
                     </div>
                     </div>
+                    {expandedEvents.includes(event.id) && (
+                      <div className='mt-2 bg-gray-200 p-3 rounded'>
+                        <p className='text-gray-700'>{event.description}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -280,15 +297,7 @@ const EventTimeline = ({ projectId }) => {
         <TaskCalendar tasks={timelineEvents} />
 
       {/* Add Task Button */}
-      <div className="fixed bottom-10 right-10">
-        <button
-          onClick={() => setIsFormVisible(true)}
-          className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600"
-          title="Add Task"
-        >
-          <FaPlus size={24} />
-        </button>
-      </div>
+      <AddItemButton onClick={() => setIsFormVisible(true)} />
       {/* Create Task Form */}
        {isFormVisible && (
         <CreateTaskForm

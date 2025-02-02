@@ -1,26 +1,52 @@
-'use client';
-import { useEffect } from 'react';
+
+"use client";
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Layout from '../mainlayout';
 
-const PresidentDashboard = () => {
+export default function PresidentDashboard() {
+  const [message, setMessage] = useState('');
+  const [auth, setAuth] = useState(false);
   const router = useRouter();
-  
-  useEffect(() => {
-    // Check if the user has the role 'President'
-    const role = localStorage.getItem('roleName');
 
-    // If not 'President', redirect to login page
-    if (role !== 'President') {
-      router.push('/login');
+  useEffect(() => {
+
+    (async () => {
+      try {
+      const content = await fetch('http://localhost:5000/api/authuser', {
+        credentials: 'include',
+    });
+    if (content.status === 200){
+    const data = await content.json();
+    setMessage(`Hi ${content.name}`)
+  }
+  else {
+    router.push('/login');
+  }
+}
+  catch (error) {
+    
+    setMessage('You are not logged in');
+  }
     }
-  }, [router]);
+)();
+  });
 
   return (
+    <Layout auth={auth}>
     <div>
+      {message}
       <h1>President Dashboard</h1>
       <p>Welcome to the President's exclusive dashboard!</p>
+      <button
+        onClick={() => {
+          localStorage.removeItem('roleName');
+          router.push('/login');
+        }}
+      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+        Logout
+      </button>
     </div>
+    </Layout>
   );
-};
-
-export default PresidentDashboard;
+}

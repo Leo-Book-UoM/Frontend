@@ -1,8 +1,10 @@
-"use client"
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+"use client"; // Mark as client-side component
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // For App Router
+import api from '@/api/authAPI';
+import Cookies from 'js-cookie'; // To handle cookies
 
-export default function Home() {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -41,33 +43,11 @@ export default function Home() {
 
     if (valid) {
       try {
-        // Perform login logic here
-        const response = await fetch('http://localhost:5000/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          const { accessToken, refreshToken, roleName } = data;
-
-          // Set cookies for logged-in user and role
-          document.cookie = `loggedIn=true; path=/;`;
-          document.cookie = `roleName=${roleName}; path=/;`;
-        
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
-          localStorage.setItem('roleName', roleName);
-        
-          if (roleName === 'President') {
-            router.push('/presidentDashboard');
-          }
+        const response = await api.post('/login', { email, password });
+        if (response.status === 200) {
+              router.push('/presidentDashboard'); // Redirect to the dashboard
         } else {
-          alert(data.message);
+          alert(response.data.message); // Show error message from the server
         }
       } catch (error) {
         console.error('Error:', error);

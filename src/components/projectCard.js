@@ -1,15 +1,24 @@
 "use client";
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { AiOutlineClockCircle, AiOutlineCalendar } from 'react-icons/ai';
-import { MdLocationOn } from 'react-icons/md';
+import React from "react";
+import { useRouter } from "next/navigation";
+import { AiOutlineClockCircle, AiOutlineCalendar } from "react-icons/ai";
+import { MdLocationOn } from "react-icons/md";
 
-const CourseCard = ({ title, image, time = "N/A", date = "N/A", venue = "Unknown Venue" }) => {
+const CourseCard = ({
+  title,
+  image,
+  time = "N/A",
+  date = "N/A",
+  venue = "Unknown Venue",
+  projectId, // Receive projectid as a prop
+}) => {
   const router = useRouter();
 
   const handleCardClick = () => {
-    router.push(`/modules/project/projectContent?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}`);
+    console.log("Clicked Project ID:", projectId); // Log the projectid
+    router.push(`/modules/project/projectContent?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}&projectId=${encodeURIComponent(projectId)}`
+    );
   };
 
   return (
@@ -18,7 +27,7 @@ const CourseCard = ({ title, image, time = "N/A", date = "N/A", venue = "Unknown
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
-      onKeyPress={(e) => e.key === 'Enter' && handleCardClick()}
+      onKeyPress={(e) => e.key === "Enter" && handleCardClick()}
     >
       {/* Image Section */}
       {image ? (

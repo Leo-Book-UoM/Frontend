@@ -3,11 +3,15 @@ import Layout from "../presidentlayout";
 import AuthWrapper from "../../components/authWrapper";
 import { Typewriter } from "react-simple-typewriter";
 import PresidentCard from "../../components/presidentProjectTaskCard";
+import PresidentMonthlyProjectCard from "@/components/presidentMonthlyProjectCard";
 import { useState, useEffect } from "react";
 
 const PresidentDashboard = () => {
   const [ongoingProjectCount, setOngoingProjectCount] = useState(0);
-  const [projectTaskCount, setProjectTaskCount] = useState({}); // Initialize as an empty array
+  const [projectTaskCount, setProjectTaskCount] = useState({});
+  const [monthProjectCount, setMonthProjectCount] = useState({projectcount: "0"});
+  const [monthlyProjectCont, setMonthlyProjectCount] = useState({});
+  const [upcommingProjects, setUpcommingProjects] = useState(0);
 
   const fetchOngoingProjectCount = async () => {
     try {
@@ -16,10 +20,10 @@ const PresidentDashboard = () => {
         throw new Error("Failed to fetch ongoing project count");
       }
       const data = await response.json();
-      console.log("Fetched Data:", data);
-      setOngoingProjectCount(data); // Assuming the response is a single number
+      setOngoingProjectCount(data); 
     } catch (error) {
       console.error("Error fetching ongoing project count:", error);
+      setUpcommingProjects(0);
     }
   };
 
@@ -30,7 +34,6 @@ const PresidentDashboard = () => {
         throw new Error("Failed to fetch project task count");
       }
       const data = await response.json();
-      console.log("Fetched Data:", data);
       setProjectTaskCount(data)
     } catch (error) {
       console.error("Error fetching project task count:", error);
@@ -38,18 +41,47 @@ const PresidentDashboard = () => {
     }
   };
 
+  const fetchMonthlyProjectCount = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/monthlyProjectCount");
+      if(!response.ok){
+        throw new Error("Failed to fetch month project count");
+      }
+      const data = await response.json();
+      setMonthProjectCount(data.thisMonthCount || { projectcount: "0" });
+      setMonthlyProjectCount(Array.isArray(data.allMonthCounts) ? data.allMonthCounts : []);
+    } catch(error){
+      console.error("Error fetching month project count:", error);
+      setMonthlyProjectCount({});
+      setMonthProjectCount({projectcount: "0"});
+    }
+  };
+
+  const fetchUpcommingProjectCount = async () => {
+    try{
+      const response = await fetch("http://localhost:5000/api/upcommingprojects");
+      if(!response.ok){
+        throw new Error("Failed to fetch upcomming project count");
+      }
+      const data = await response.json();
+      setUpcommingProjects(data);
+    }catch(error){
+      console.error("Error fetching upcomming project count:", error);
+      setUpcommingProjects(0);
+    }
+  }
+
   useEffect(() => {
     fetchOngoingProjectCount();
     fetchProjectTaskCount();
-    console.log("balla",projectTaskCount)
+    fetchMonthlyProjectCount();
+    fetchUpcommingProjectCount();
   }, []);
 
   const combinedData = projectTaskCount ? {
     ...projectTaskCount,
     ongoingProjectCount    
   } : null;
-
-  console.log("Combined Data:", combinedData);
 
   return (
     <AuthWrapper>
@@ -71,13 +103,12 @@ const PresidentDashboard = () => {
                 /> 
               )}
 
-              {combinedData && (
-                <PresidentCard
-                  title="Ongoing Projects"
-                  count={combinedData.ongoingProjectCount}
-                  pendingTackCount={combinedData.pendingtasks}
-                  totalTaskCount={combinedData.totaltasks}
-                  timeOutTaskCount={combinedData.timeouttasks}
+              {monthProjectCount && monthlyProjectCont && upcommingProjects && (
+                <PresidentMonthlyProjectCard
+                  title="This Month's Projects"
+                  count={monthProjectCount.project_count}
+                  data = {monthlyProjectCont}
+                  upcommingProjectsCount = {upcommingProjects}
                 /> 
               )}
             </div>

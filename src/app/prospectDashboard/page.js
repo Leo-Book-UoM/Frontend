@@ -25,7 +25,6 @@ const HomePage = () => {
         throw new Error("Failed to fetch projects");
       }
       const data = await response.json();
-      console.log("Fetched courses:", data); // Log all fetched courses
       setCourses(data);
     } catch (error) {
       console.error("Error fetching projects:", error);

@@ -4,6 +4,7 @@ import AuthWrapper from "../../components/authWrapper";
 import { Typewriter } from "react-simple-typewriter";
 import PresidentCard from "../../components/presidentProjectTaskCard";
 import PresidentMonthlyProjectCard from "@/components/presidentMonthlyProjectCard";
+import PresidentProjectAttributeCard from "@/components/presidentProjectAttributeCard";
 import { useState, useEffect } from "react";
 
 const PresidentDashboard = () => {
@@ -12,6 +13,7 @@ const PresidentDashboard = () => {
   const [monthProjectCount, setMonthProjectCount] = useState({projectcount: "0"});
   const [monthlyProjectCont, setMonthlyProjectCount] = useState({});
   const [upcommingProjects, setUpcommingProjects] = useState(0);
+  const [projectAttributeCount, setProjectAttributeCount] = useState({});
 
   const fetchOngoingProjectCount = async () => {
     try {
@@ -69,13 +71,28 @@ const PresidentDashboard = () => {
       console.error("Error fetching upcomming project count:", error);
       setUpcommingProjects(0);
     }
-  }
+  };
+
+  const fetchProjectAttributeCounts = async () => {
+    try{
+      const response = await fetch("http://localhost:5000/api/attributeCounts");
+      if(!response.ok){
+        throw new Error("Failed to fetch project attribute count");
+      }
+      const data = await response.json();
+      setProjectAttributeCount(data);
+    }catch(error){
+      console.error("Error fetching project attribute count:", error);
+      setProjectAttributeCount({});
+    }
+  };
 
   useEffect(() => {
     fetchOngoingProjectCount();
     fetchProjectTaskCount();
     fetchMonthlyProjectCount();
     fetchUpcommingProjectCount();
+    fetchProjectAttributeCounts();
   }, []);
 
   const combinedData = projectTaskCount ? {
@@ -109,6 +126,14 @@ const PresidentDashboard = () => {
                   count={monthProjectCount.project_count}
                   data = {monthlyProjectCont}
                   upcommingProjectsCount = {upcommingProjects}
+                /> 
+              )}
+
+              {projectAttributeCount && (
+                <PresidentProjectAttributeCard
+                  title="Total Attributes"
+                  totalAttributeCount={projectAttributeCount.attribute_count}
+                  doneAttributeCount={projectAttributeCount.done_attribute_count}
                 /> 
               )}
             </div>

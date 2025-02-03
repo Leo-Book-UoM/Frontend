@@ -1,54 +1,71 @@
 import React from "react";
-import { FaArrowUp, FaChartBar } from "react-icons/fa";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS,CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend, } from "chart.js";
 
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-const PresidentCard = ({
+const PresidentMonthlyProjectCard = ({
   title = "",
   count = 0,
-  pendingTaskCount = 0,
-  totalTaskCount = 0,
-  timeOutTaskCount = 0,
+  data,
+  upcommingProjectsCount,
 
 }) => {
-  const doneTaskCount = totalTaskCount - (pendingTaskCount + timeOutTaskCount);
-  const doneTaskPercentage =totalTaskCount > 0 ? (doneTaskCount  / totalTaskCount) * 100 : 0;
-  const timeOutTaskPresentage = totalTaskCount > 0 ? (timeOutTaskCount / totalTaskCount) * 100 : 0;
-  const pendingTaskPresentage = totalTaskCount > 0 ? (pendingTaskCount / totalTaskCount) * 100 : 0;
+    if(!Array.isArray(data) ||  data.length === 0)
+        return <p>Loarding chart...</p>
 
-  const pieChartData = {
-    labels: ["Delayed Task" , "Pending Tasks", "Done Tasks"],
-    datasets: [
-      {
-      data: [timeOutTaskPresentage, pendingTaskPresentage, doneTaskPercentage],
-      backgroundColor: ["#FF6384", "#FFCD56", "#4BC0C0"],
-      borderColor: ["#FF6384", "#FFCD56", "#4BC0C0"],
-      borderWidth: 1,
-      },
-    ],
-  };
+    const months = data.map((item) => `${item.month_name}`);
+    const projectCounts = data.map((item) => parseInt(item.project_count, 10));
 
-  const pieChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "none", 
-      },
-      tooltip: {
-        enabled: true,
-      },
-    },
-  maintainAspectRatio: true, 
-  cutout: "60%"
-  };
+    const chartData = {
+        labels: months,
+        datasets: [
+            {
+                label: "Project Count",
+                data: projectCounts,
+                borderColor: "#FF6384",
+                backgroundColor: "rgb(0, 0, 0)",
+                pointBackgroundColor: "#FF6384",
+                borderWidth: 2,
+                tension: 0.4,
+            },
+        ],
+    };
 
+    const options = {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false,
+            position: "top",
+          },
+          tooltip: {
+            enabled: true,
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: false,
+              text: "Months",
+            },
+          },
+          y: {
+            title: {
+              display: false,
+              text: "Project Count",
+            },
+            beginAtZero: true,
+          },
+        },
+      };
+
+const doneProjectCount = count > 0 ? (count - upcommingProjectsCount) : 0;
+const doneProjectPresentage = count > 0 ? (doneProjectCount/count)*100 : 0;
   let percentageColorClass = "";
-  if(doneTaskPercentage <= 40){
+  if(doneProjectPresentage <= 40){
     percentageColorClass ="text-red-400";
-  }else if (doneTaskPercentage <= 70){
+  }else if (doneProjectPresentage <= 70 && doneProjectPresentage > 40 ){
     percentageColorClass ="text-yellow-400";
   } else {
     percentageColorClass = "text-green-400";
@@ -59,21 +76,21 @@ const PresidentCard = ({
       <div className="flex justify-between  sm:flex-col md:flex-row">
         <div>
           <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>
-          <h2 className="text-white font-bold text-2xl">{count}</h2>
+          <h2 className="text-white font-bold text-2xl lg:mb-3">{count}</h2>
           <p className="text-sm text-gray-300 mt-5">
       <span className="">Done Status</span>
-        <span className={`flex items-center ${percentageColorClass}`}>
-          <span className="" /> {doneTaskPercentage.toFixed(2)}%
+      <span style= {{ fontSize: "18px" }}  className={`flex items-center ${percentageColorClass}`}>
+          <span className="pt-6" /> {upcommingProjectsCount}
         </span>
       </p>
         </div>
-        <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[80px]  sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[120px] lg:h-[120px] ">
-          <h2 className="text-base  text-gray-300 mb-2">Task Distribution</h2>
-            <Pie data={pieChartData} options={pieChartOptions} />
+        <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[300px]  sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[350px] lg:h-[110px] ">
+          <h2 className="text-base  text-gray-300 mb-2 lg:ml-12 sm:ml-6">Project Distribution</h2>
+            <Line data={chartData} options={options} />
         </div>
       </div>
     </div>
   );
 };
 
-export default PresidentCard;
+export default PresidentMonthlyProjectCard;

@@ -48,7 +48,7 @@ const PresidentCard = ({
   let percentageColorClass = "";
   if(doneTaskPercentage <= 40){
     percentageColorClass ="text-red-400";
-  }else if (doneTaskPercentage <= 70){
+  }else if (doneTaskPercentage <= 70 && doneTaskPercentage > 40){
     percentageColorClass ="text-yellow-400";
   } else {
     percentageColorClass = "text-green-400";
@@ -60,10 +60,10 @@ const PresidentCard = ({
         <div>
           <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>
           <h2 className="text-white font-bold text-2xl">{count}</h2>
-          <p className="text-sm text-gray-300 mt-5">
+          <p className="text-sm text-gray-300 mt-9">
       <span className="">Done Status</span>
-        <span className={`flex items-center ${percentageColorClass}`}>
-          <span className="" /> {doneTaskPercentage.toFixed(2)}%
+        <span style={{ fontSize: "18px" }}className={`flex items-center   ${percentageColorClass}`}>
+          <span className="pt-6" /> {doneTaskPercentage.toFixed(2)}%
         </span>
       </p>
         </div>

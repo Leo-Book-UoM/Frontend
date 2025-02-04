@@ -14,6 +14,8 @@ const PresidentDashboard = () => {
   const [monthlyProjectCont, setMonthlyProjectCount] = useState({});
   const [upcommingProjects, setUpcommingProjects] = useState(0);
   const [projectAttributeCount, setProjectAttributeCount] = useState({});
+  const [currentMonthTreasures, setCurrentMonthTreasures] = useState({});
+  const [allMonthTreasures, setAllMonthTreasures] = useState({});
 
   const fetchOngoingProjectCount = async () => {
     try {
@@ -87,12 +89,33 @@ const PresidentDashboard = () => {
     }
   };
 
+  const fetchMonthlyTreasureDetailes = async () => {
+    try{
+      const response = await fetch("http://localhost:5000/api/getTreasureDetailes");
+      if(!response.ok){
+        throw new Error("Failed to fetch monthly treasure detailes");
+      }
+      const data = await response.json();
+      try{
+      setAllMonthTreasures(data.allMonthTreasures);
+      setCurrentMonthTreasures(data.currentMonthTreasures);
+      }catch (error){
+        console.error("faild to set treasure detailes", error);
+      }
+    }catch(error){
+      console.error("Error fetching treasure detailes:", error);
+      setAllMonthTreasures({});
+      setCurrentMonthTreasures({});
+    }
+  }
+
   useEffect(() => {
     fetchOngoingProjectCount();
     fetchProjectTaskCount();
     fetchMonthlyProjectCount();
     fetchUpcommingProjectCount();
     fetchProjectAttributeCounts();
+    fetchMonthlyTreasureDetailes();
   }, []);
 
   const combinedData = projectTaskCount ? {
@@ -134,6 +157,15 @@ const PresidentDashboard = () => {
                   title="Total Attributes"
                   totalAttributeCount={projectAttributeCount.attribute_count}
                   doneAttributeCount={projectAttributeCount.done_attribute_count}
+                /> 
+              )}
+
+              {monthProjectCount && monthlyProjectCont && upcommingProjects && (
+                <PresidentMonthlyProjectCard
+                  title="This Month's Projects"
+                  count={monthProjectCount.project_count}
+                  data = {monthlyProjectCont}
+                  upcommingProjectsCount = {upcommingProjects}
                 /> 
               )}
             </div>

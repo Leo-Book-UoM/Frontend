@@ -12,8 +12,9 @@ const MainLayout = ({ children }) => {
       <div className={`flex flex-col flex-1 transition-all  duration-700  bg-gray-900 ${
         isSidebarOpen ? 'ml-64' : "ml-20"} flex-1`}>
         
-        <main className="flex-1 overflow-y-auto p-4">
-          {children}
+        <main className="flex-1 overflow-y-auto p-4 hide-scrollbar">
+          <div className="w-full">{children}</div>
+          
         </main>
       </div>
     </div>

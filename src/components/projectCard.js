@@ -17,7 +17,7 @@ const CourseCard = ({
 
   const handleCardClick = () => {
     console.log("Clicked Project ID:", projectId); // Log the projectid
-    router.push(`/modules/project/projectContent?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}&projectId=${encodeURIComponent(projectId)}`
+    router.push(`/projectContent?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}&projectId=${encodeURIComponent(projectId)}`
     );
   };
 

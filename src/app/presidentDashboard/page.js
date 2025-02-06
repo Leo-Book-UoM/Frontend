@@ -2,11 +2,20 @@
 import Layout from "../presidentlayout";
 import AuthWrapper from "../../components/authWrapper";
 import { Typewriter } from "react-simple-typewriter";
-import PresidentCard from "../../components/presidentCard";
+import PresidentCard from "../../components/presidentProjectTaskCard";
+import PresidentMonthlyProjectCard from "@/components/presidentMonthlyProjectCard";
+import PresidentProjectAttributeCard from "@/components/presidentProjectAttributeCard";
 import { useState, useEffect } from "react";
 
 const PresidentDashboard = () => {
-  const [ongoingProjectCount, setOngoingProjectCount] = useState(0); // ✅ Store number, not array
+  const [ongoingProjectCount, setOngoingProjectCount] = useState(0);
+  const [projectTaskCount, setProjectTaskCount] = useState({});
+  const [monthProjectCount, setMonthProjectCount] = useState({projectcount: "0"});
+  const [monthlyProjectCont, setMonthlyProjectCount] = useState({});
+  const [upcommingProjects, setUpcommingProjects] = useState(0);
+  const [projectAttributeCount, setProjectAttributeCount] = useState({});
+  const [currentMonthTreasures, setCurrentMonthTreasures] = useState({});
+  const [allMonthTreasures, setAllMonthTreasures] = useState({});
 
   const fetchOngoingProjectCount = async () => {
     try {
@@ -15,16 +24,104 @@ const PresidentDashboard = () => {
         throw new Error("Failed to fetch ongoing project count");
       }
       const data = await response.json();
-      console.log("Fetched Data:", data); // ✅ Debugging: See what the API returns
-      setOngoingProjectCount(data); // ✅ Set the number directly
+      setOngoingProjectCount(data); 
     } catch (error) {
       console.error("Error fetching ongoing project count:", error);
+      setUpcommingProjects(0);
     }
   };
 
+  const fetchProjectTaskCount = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/getTasksDetails");
+      if (!response.ok) {
+        throw new Error("Failed to fetch project task count");
+      }
+      const data = await response.json();
+      setProjectTaskCount(data)
+    } catch (error) {
+      console.error("Error fetching project task count:", error);
+      setProjectTaskCount([]);
+    }
+  };
+
+  const fetchMonthlyProjectCount = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/monthlyProjectCount");
+      if(!response.ok){
+        throw new Error("Failed to fetch month project count");
+      }
+      const data = await response.json();
+      setMonthProjectCount(data.thisMonthCount || { projectcount: "0" });
+      setMonthlyProjectCount(Array.isArray(data.allMonthCounts) ? data.allMonthCounts : []);
+    } catch(error){
+      console.error("Error fetching month project count:", error);
+      setMonthlyProjectCount({});
+      setMonthProjectCount({projectcount: "0"});
+    }
+  };
+
+  const fetchUpcommingProjectCount = async () => {
+    try{
+      const response = await fetch("http://localhost:5000/api/upcommingprojects");
+      if(!response.ok){
+        throw new Error("Failed to fetch upcomming project count");
+      }
+      const data = await response.json();
+      setUpcommingProjects(data);
+    }catch(error){
+      console.error("Error fetching upcomming project count:", error);
+      setUpcommingProjects(0);
+    }
+  };
+
+  const fetchProjectAttributeCounts = async () => {
+    try{
+      const response = await fetch("http://localhost:5000/api/attributeCounts");
+      if(!response.ok){
+        throw new Error("Failed to fetch project attribute count");
+      }
+      const data = await response.json();
+      setProjectAttributeCount(data);
+    }catch(error){
+      console.error("Error fetching project attribute count:", error);
+      setProjectAttributeCount({});
+    }
+  };
+
+  const fetchMonthlyTreasureDetailes = async () => {
+    try{
+      const response = await fetch("http://localhost:5000/api/getTreasureDetailes");
+      if(!response.ok){
+        throw new Error("Failed to fetch monthly treasure detailes");
+      }
+      const data = await response.json();
+      try{
+      setAllMonthTreasures(data.allMonthTreasures);
+      setCurrentMonthTreasures(data.currentMonthTreasures);
+      }catch (error){
+        console.error("faild to set treasure detailes", error);
+      }
+    }catch(error){
+      console.error("Error fetching treasure detailes:", error);
+      setAllMonthTreasures({});
+      setCurrentMonthTreasures({});
+    }
+  }
+
   useEffect(() => {
     fetchOngoingProjectCount();
+    fetchProjectTaskCount();
+    fetchMonthlyProjectCount();
+    fetchUpcommingProjectCount();
+    fetchProjectAttributeCounts();
+    fetchMonthlyTreasureDetailes();
   }, []);
+
+  const combinedData = projectTaskCount ? {
+    ...projectTaskCount,
+    ongoingProjectCount    
+  } : null;
 
   return (
     <AuthWrapper>
@@ -36,13 +133,41 @@ const PresidentDashboard = () => {
             </h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-              <PresidentCard title="Ongoing Projects" count={ongoingProjectCount} />
+              {combinedData && (
+                <PresidentCard
+                  title="Ongoing Projects"
+                  count={combinedData.ongoingProjectCount}
+                  pendingTackCount={combinedData.pendingtasks}
+                  totalTaskCount={combinedData.totaltasks}
+                  timeOutTaskCount={combinedData.timeouttasks}
+                /> 
+              )}
 
-              {/* ✅ Hardcoded cards */}
-              <PresidentCard count={12} percentageChange={20} />
-              <PresidentCard count={5} percentageChange={-10} />
-              <PresidentCard count={7} percentageChange={5} />
-              <PresidentCard count={7} percentageChange={5} />
+              {monthProjectCount && monthlyProjectCont && upcommingProjects && (
+                <PresidentMonthlyProjectCard
+                  title="This Month's Projects"
+                  count={monthProjectCount.project_count}
+                  data = {monthlyProjectCont}
+                  upcommingProjectsCount = {upcommingProjects}
+                /> 
+              )}
+
+              {projectAttributeCount && (
+                <PresidentProjectAttributeCard
+                  title="Total Attributes"
+                  totalAttributeCount={projectAttributeCount.attribute_count}
+                  doneAttributeCount={projectAttributeCount.done_attribute_count}
+                /> 
+              )}
+
+              {monthProjectCount && monthlyProjectCont && upcommingProjects && (
+                <PresidentMonthlyProjectCard
+                  title="This Month's Projects"
+                  count={monthProjectCount.project_count}
+                  data = {monthlyProjectCont}
+                  upcommingProjectsCount = {upcommingProjects}
+                /> 
+              )}
             </div>
           </main>
         </Layout>

@@ -1,24 +1,43 @@
-import React from "react";
+'use client'
+import React, { useState, useEffect, useCallback } from "react";
 import SideBar from "../components/sidebar";
-import { useState } from "react";
 
 const MainLayout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
-  return(
-    <div className="flex h-screen">
-      <SideBar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen}/>
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedState = localStorage.getItem("sidebarState");
+      if (savedState !== null) {
+        setSidebarOpen(JSON.parse(savedState));
+      }
+    }
+  }, []);
 
-      <div className={`flex flex-col flex-1 transition-all  duration-700  bg-gray-900 ${
-        isSidebarOpen ? 'ml-64' : "ml-20"} flex-1`}>
-        
-        <main className="flex-1 overflow-y-auto p-4 hide-scrollbar">
-          <div className="w-full">{children}</div>
-          
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => {
+      const newState = !prev;
+      localStorage.setItem("sidebarState", JSON.stringify(newState));
+      return newState;
+    });
+  }, []);
+
+  console.log("MainLayout re-rendered");
+
+  return (
+    <div className="flex h-screen">
+      <SideBar isOpen={isSidebarOpen} setIsOpen={toggleSidebar} />
+      <div
+        className={`flex flex-col transition-all duration-700 bg-gray-900 ${
+          isSidebarOpen ? "ml-64" : "ml-20"
+        } flex-1`}
+      >
+        <main className="flex-1 overflow-y-auto hide-scrollbar w-full">
+          {children}
         </main>
       </div>
     </div>
   );
 };
 
-export default MainLayout;
+export default React.memo(MainLayout);

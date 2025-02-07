@@ -1,25 +1,55 @@
 import Link from 'next/link';
-import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useMemo } from 'react';
+import { useSearchParams, usePathname } from 'next/navigation';
+import MainLayout from '@/app/mainlayout';
 
-const CourseTabs = () => {
-  const router = useRouter();
+const CourseTabs = React.memo(() => {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+    // Get project ID once, so it does not trigger re-renders
+    const projectId = useMemo(() => searchParams.get("projectId") || "", [searchParams]);
+
+    // Memoize tab labels (this prevents object recreation)
+    const tabs = useMemo(() => ({
+      projectContent: "Content",
+      projectDocuments: "Documents",
+      projectTreasure: "Treasure",
+      projectITEditorial: "IT & Editorial",
+    }), []);
+  
 
   const title = encodeURIComponent(searchParams.get('title') || "");
   const image = encodeURIComponent(searchParams.get("image") || "")
-  const projectId = searchParams.get("projectId") || "";
+  // const projectId = searchParams.get("projectId") || "";
+
+  // const tabs = {
+  //   projectContent: "Content",
+  //   projectDocuments: "Documents",
+  //   projectTreasure: "Treasure",
+  //   projectITEditorial: "IT & Editorial",
+  // };
+
+  // Function to determine if the current path matches the tab
+  const getLinkClassName = (path) => {
+    return pathname.startsWith(path)
+      ? "border-b-2 border-white"
+      : "border-transparent hover:border-white";
+  };
 
   return (
-    <div className="bg-gray-900 text-white px-8 py-2 flex space-x-6">
-      <Link href={`/projectContent?title=${title}&image=${image}&projectId=${projectId}`} className="hover:border-b-2 border-white">
-        Overview
-      </Link>
-      <a href="/projectTreasuries" className="hover:border-b-2 border-white">Records</a>
-      <Link href="" className="hover:border-b-2 border-white">Treasure</Link>
-      <a href="#" className="hover:border-b-2 border-white">Media</a>
+    <div className="bg-gray-900 text-white px-8 py-5 p-4 flex space-x-6 sticky top-0 z-50">
+      {Object.entries(tabs).map(([tab, label]) => (
+        <Link
+           key={tab}
+           href={`/${tab}?title=${title}&image=${image}&projectId=${projectId}`}
+           className={`border-b-2 ${getLinkClassName(`/${tab}`)}`}
+           >
+             {label}
+         </Link> 
+
+      ))}
     </div>
   );
-};
+});
 
 export default CourseTabs;

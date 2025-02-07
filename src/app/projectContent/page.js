@@ -16,7 +16,7 @@ const CoursePage = () => {
   return (
     <MainLayout>
       <div className="bg-gray-900 min-h-screen">
-        <ProjectTabs projectId={projectId} />
+        <ProjectTabs />
         <div className="max-w-5xl mx-auto py-8">
             <ProjectContentImage courseParams={courseParams} image={image} />
           {<EventTimeline projectId={projectId} />  }

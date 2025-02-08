@@ -32,7 +32,7 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
     }
   }, [isOpen]);
 
-  console.log("Sidebar Rendered");
+  //console.log("Sidebar Rendered");
 
   const renderNavItem = useCallback(
     (Icon, label, href) => (

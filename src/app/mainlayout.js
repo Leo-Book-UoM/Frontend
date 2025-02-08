@@ -22,7 +22,7 @@ const MainLayout = ({ children }) => {
     });
   }, []);
 
-  console.log("MainLayout re-rendered");
+  //console.log("MainLayout re-rendered");
 
   return (
     <div className="flex h-screen">
@@ -32,7 +32,7 @@ const MainLayout = ({ children }) => {
           isSidebarOpen ? "ml-64" : "ml-20"
         } flex-1`}
       >
-        <main className="flex-1 overflow-y-auto hide-scrollbar w-full">
+        <main className="flex-1 overflow-y-auto hide-scrollbar w-full ">
           {children}
         </main>
       </div>

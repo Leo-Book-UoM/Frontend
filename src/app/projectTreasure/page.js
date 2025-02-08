@@ -1,10 +1,10 @@
 "use client"
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 import MainLayout from '../mainlayout'
 import ProjectTabs from '@/components/projectTabs'
 import { useSearchParams } from 'next/navigation'
 import ProjectContentImage from '@/components/projectContentImage'
-
+import ProjectBudgetReport from '@/components/projectBudgetReport'
 
 export default function page() {
     const searchParams = useSearchParams();
@@ -18,8 +18,8 @@ export default function page() {
         <ProjectTabs />
         <div className="max-w-5xl mx-auto py-8">
             <ProjectContentImage courseParams={courseParams} image={image} />
+           <ProjectBudgetReport projectId={projectId}/>
         </div>
-
       </div>
     </MainLayout>
   )

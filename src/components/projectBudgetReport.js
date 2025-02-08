@@ -1,8 +1,9 @@
 import React, { useEffect , useState} from "react";
+import AddProjectBudgetDetailes from "./addProjectBudgetDetailes";
 
 const ProjectBudgetReport = ({projectId}) => {
 const[ income , setIncome] = useState([]);
-const[ selectedIds, setSlectedIds] = useState([]);
+const[isModelOpen, setIsModelOpen] = useState(false);
 
 const fetchBudgetIncome = async () =>{
     try{
@@ -19,45 +20,18 @@ const fetchBudgetIncome = async () =>{
     }
 };
 
-const addBudgetDetailes = async () => {
-    try{
-        const response = await fetch(`http://localhost:5000/api/addprojectBudget/${projectId}/${status}`, {
-            method:'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                description: [
-                    {
-                        amount: "",
-                        billNo: "",
-                        description: ""
-                   }
-                ]
-            })
-        })
-    }catch(error){}
-
 useEffect(() => {
     fetchBudgetIncome();
 },[projectId]);
 
-const toggleSelect = (id) => {
-    setSlectedIds = (id) => {
-        selectedIds((prev) => 
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev,id]);
-    };
-};
-
-const handleDelete = () => {
-    setProducts(products.filter((product) => !selectedIds.includes(product.id)));
-    setSlectedIds([]);
-};
-
-
 return(
     <div className="rounded-2xl shadow-lg">
     <h2 className="text-white text-2xl font-semibold mb-4">Project Budget Report</h2>
+    <button className="mb-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+    onClick={()=> setIsModelOpen(true)}
+    >
+        + Add Budget
+    </button>
     <div className="overflow-x-auto">
         <table className="w-full text-white bg-gray-600 rounded-lg shadow-md">
             <thead>
@@ -86,8 +60,10 @@ return(
             </tbody>
         </table>
     </div>
+    {isModelOpen && (
+            <AddProjectBudgetDetailes projectId={projectId} onClose={() => setIsModelOpen(false)} />
+    )}
 </div>
 );
 }
-};
 export default ProjectBudgetReport;

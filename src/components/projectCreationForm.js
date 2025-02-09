@@ -40,10 +40,7 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
       return;
     }
   
-    // Ensure time is formatted as HH:MM:SS
     let formattedTime = newEvent.time ? `${newEvent.time}:00` : null;
-  
-    console.log("Sending Data:", { ...newEvent, time: formattedTime });
   
     try {
       const response = await fetch("http://localhost:5000/api/addproject", {
@@ -53,14 +50,13 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
         },
         body: JSON.stringify({
           ...newEvent,
-          time: formattedTime, // Convert HH:MM to HH:MM:SS
+          time: formattedTime,
         }),
       });
   
       if (!response.ok) {
         throw new Error("Failed to create project");
       }
-  
       setIsFormVisible(false);
       setNewEvent({
         title: "",
@@ -82,7 +78,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
       console.error("Error creating project:", error);
     }
   };
-  
 
   const getProspectNames = async () => {
     try {
@@ -92,20 +87,17 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-
       const data = await response.json();
-
-      // Ensure the response is an array
       setProspectName(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching prospect names:", error);
-      setProspectName([]); // Set empty array if an error occurs
+      setProspectName([]); 
     }
   };
 
   useEffect(() => {
-    getProspectNames(); // Fetch prospect names when the component mounts
-  }, []); // Empty dependency array ensures it runs only once
+    getProspectNames();
+  }, []); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -121,7 +113,7 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-800">Add New Project</h2>
           <button
-            onClick={() => setIsFormVisible(false)} // Close the form when clicked
+            onClick={() => setIsFormVisible(false)}
             className="text-gray-500 hover:text-red-500"
             title="Close"
           >
@@ -142,7 +134,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 required
               />
             </div>
-
             <div>
               <label className="font-bold">Project Date</label>
               <input
@@ -153,7 +144,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 className="border rounded p-2 w-full"
               />
             </div>
-
             <div>
               <label className="font-bold">Project Time</label>
               <input
@@ -164,7 +154,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 className="border rounded p-2 w-full"
               />
             </div>
-
             <div>
               <label className="font-bold">Project Location</label>
               <input
@@ -176,7 +165,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 placeholder="Venue"
               />
             </div>
-
             <div className="col-span-2">
               <label className="font-bold">Project Image</label>
               <div
@@ -191,7 +179,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 )}
               </div>
             </div>
-
             <div>
               <label className="font-bold">Project Chairman</label>
               <select
@@ -208,11 +195,10 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 ))}
               </select>
             </div>
-
             <div>
               <label className="font-bold">Project Secretary</label>
               <select
-                name="secretary" // Fix typo here: was "secratary"
+                name="secretary" 
                 value={newEvent.secretary}
                 onChange={handleInputChange}
                 className="border rounded p-2 w-full"
@@ -225,11 +211,10 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 ))}
               </select>
             </div>
-
             <div>
               <label className="font-bold">Project Treasurer</label>
               <select
-                name="treasure" // Fix typo here: was "treasure"
+                name="treasure" 
                 value={newEvent.treasure}
                 onChange={handleInputChange}
                 className="border rounded p-2 w-full"

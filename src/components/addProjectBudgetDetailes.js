@@ -2,9 +2,9 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
 
-const  addProjectBudgetDetailes = ({projectId, onClose}) => {
-    const status = 1;
+const  addProjectBudgetDetailes = ({projectId, onClose, onBudgetAdded}) => {
     const [description, setDescription] = useState([{description:"",billNo:"",amount:""}]);
+
     //handle input change
     const handleDescriptionChange = (index, field, value) => {
         const newDescription = [...description];
@@ -15,10 +15,11 @@ const  addProjectBudgetDetailes = ({projectId, onClose}) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const response = await axios.post(`http://localhost:5000/api/addprojectBudget/${projectId}/${status}`,{
+            const response = await axios.post(`http://localhost:5000/api/addprojectBudget/${projectId}`,{
                 description
             });
             console.log("buddget added successfully!");
+            onBudgetAdded(description)
             onClose();
         }catch(error){
             console.error("Error adding buddget",error);
@@ -39,9 +40,10 @@ const  addProjectBudgetDetailes = ({projectId, onClose}) => {
           </button>
         </div>
             <form onSubmit={handleSubmit}>
-                <div className='grid grid-cols-1 gap-4'>
+                <div className='grid grid-cols-1 gap-6'>
                 {description.map((item, index) => (
                     <div key={index}>
+                        <div className='mt-0'>
                         <label className='font-bold'>Description</label>
                         <input
                             type="text"
@@ -52,6 +54,8 @@ const  addProjectBudgetDetailes = ({projectId, onClose}) => {
                             className='border rounded p-2 w-full '
                             required
                         />
+                        </div>
+                        <div className='mt-3'>
                         <label className='font-bold'>Bill No.</label>
                         <input
                             type="number"
@@ -61,6 +65,8 @@ const  addProjectBudgetDetailes = ({projectId, onClose}) => {
                             onChange={(e) => handleDescriptionChange(index, "billNo", e.target.value)}
                             className='border rounded p-2 w-full '
                         />
+                        </div>
+                        <div className='mt-3'>
                         <label className='font-bold'>Amount</label>
                         <input
                             type="number"
@@ -71,10 +77,11 @@ const  addProjectBudgetDetailes = ({projectId, onClose}) => {
                             className='border rounded p-2 w-full '
                             required
                         />
+                        </div>
                     </div>
                 ))}
 
-                <button type="submit">Submit</button>
+                <button type="submit" className='bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600'>Submit</button>
             </div>
             </form>
             </div>

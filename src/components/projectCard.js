@@ -11,12 +11,12 @@ const CourseCard = ({
   time = "N/A",
   date = "N/A",
   venue = "Unknown Venue",
-  projectId, // Receive projectid as a prop
+  projectId,
 }) => {
   const router = useRouter();
 
   const handleCardClick = () => {
-    console.log("Clicked Project ID:", projectId); // Log the projectid
+    console.log("Clicked Project ID:", projectId);
     router.push(`/projectContent?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}&projectId=${encodeURIComponent(projectId)}`
     );
   };
@@ -29,7 +29,6 @@ const CourseCard = ({
       tabIndex={0}
       onKeyPress={(e) => e.key === "Enter" && handleCardClick()}
     >
-      {/* Image Section */}
       {image ? (
         <img
           src={image}
@@ -41,17 +40,11 @@ const CourseCard = ({
           <span className="text-gray-400">No Image Available</span>
         </div>
       )}
-
-      {/* Title */}
       <h2 className="text-xl font-semibold mb-2 text-blue-500">{title}</h2>
-
-      {/* Venue */}
       <div className="flex items-center space-x-2 mb-2 text-sm">
         <MdLocationOn className="text-red-500" />
         <p className="hover:text-red-500">{venue}</p>
       </div>
-
-      {/* Time and Date */}
       <div className="flex flex-wrap justify-between pt-1 space-x-2 text-sm">
         <div className="flex items-center space-x-2 mb-2">
           <AiOutlineClockCircle className="text-yellow-400" />

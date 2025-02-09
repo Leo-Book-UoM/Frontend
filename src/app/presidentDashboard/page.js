@@ -5,6 +5,7 @@ import { Typewriter } from "react-simple-typewriter";
 import PresidentCard from "../../components/presidentProjectTaskCard";
 import PresidentMonthlyProjectCard from "@/components/presidentMonthlyProjectCard";
 import PresidentProjectAttributeCard from "@/components/presidentProjectAttributeCard";
+import PresidentTreasureDetailesCard from "@/components/presidentTreasureDetailesCard";
 import { useState, useEffect } from "react";
 
 const PresidentDashboard = () => {
@@ -122,7 +123,7 @@ const PresidentDashboard = () => {
     ...projectTaskCount,
     ongoingProjectCount    
   } : null;
-
+  console.log("ppt",allMonthTreasures);
   return (
     <AuthWrapper>
       {(userName) => (
@@ -160,12 +161,11 @@ const PresidentDashboard = () => {
                 /> 
               )}
 
-              {monthProjectCount && monthlyProjectCont && upcommingProjects && (
-                <PresidentMonthlyProjectCard
-                  title="This Month's Projects"
-                  count={monthProjectCount.project_count}
-                  data = {monthlyProjectCont}
-                  upcommingProjectsCount = {upcommingProjects}
+              {allMonthTreasures && currentMonthTreasures && (
+                <PresidentTreasureDetailesCard
+                  title="Total Income"
+                  thisMonthTreasureDetailes = {currentMonthTreasures}
+                  allMonthTreasureDetailes = {allMonthTreasures}
                 /> 
               )}
             </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaTimes } from 'react-icons/fa';
 
-const CreateProjectForm = ({ setIsFormVisible }) => {
+const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState('');
   const [newEvent, setNewEvent] = useState({
@@ -42,21 +42,29 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
   
     let formattedTime = newEvent.time ? `${newEvent.time}:00` : null;
   
+    const formData = new FormData();
+    formData.append("title", newEvent.title);
+    if (newEvent.date) formData.append("date", newEvent.date);
+    if (formattedTime) formData.append("time", formattedTime);
+    if (newEvent.location) formData.append("location", newEvent.location);
+    if (newEvent.category) formData.append("category", newEvent.category);
+    if (newEvent.status !== undefined) formData.append("status", newEvent.status);
+    if (newEvent.chairman) formData.append("chairman", newEvent.chairman);
+    if (newEvent.secretary) formData.append("secretary", newEvent.secretary);
+    if (newEvent.treasurer) formData.append("treasurer", newEvent.treasurer);
+    if (imageFile) formData.append("image", imageFile);
     try {
       const response = await fetch("http://localhost:5000/api/addproject", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...newEvent,
-          time: formattedTime,
-        }),
+        body: formData,
       });
   
       if (!response.ok) {
         throw new Error("Failed to create project");
       }
+      const newProject = await response.json();
+      onProjectAdded(newProject);
+  
       setIsFormVisible(false);
       setNewEvent({
         title: "",
@@ -66,19 +74,19 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
         description: "",
         chairman: "",
         secretary: "",
-        treasure: "",
+        treasurer: "",
         image: "",
         category: null,
         status: 1,
       });
   
       setImageFile(null);
-      setPreview('');
+      setPreview("");
     } catch (error) {
       console.error("Error creating project:", error);
     }
   };
-
+  
   const getProspectNames = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/getUserNames/Prospect`);

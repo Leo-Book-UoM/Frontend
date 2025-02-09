@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaTimes } from 'react-icons/fa';
 
-const CreateProjectForm = ({ setIsFormVisible }) => {
+const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState('');
   const [newEvent, setNewEvent] = useState({
@@ -40,26 +40,30 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
       return;
     }
   
-    // Ensure time is formatted as HH:MM:SS
     let formattedTime = newEvent.time ? `${newEvent.time}:00` : null;
   
-    console.log("Sending Data:", { ...newEvent, time: formattedTime });
-  
+    const formData = new FormData();
+    formData.append("title", newEvent.title);
+    if (newEvent.date) formData.append("date", newEvent.date);
+    if (formattedTime) formData.append("time", formattedTime);
+    if (newEvent.location) formData.append("location", newEvent.location);
+    if (newEvent.category) formData.append("category", newEvent.category);
+    if (newEvent.status !== undefined) formData.append("status", newEvent.status);
+    if (newEvent.chairman) formData.append("chairman", newEvent.chairman);
+    if (newEvent.secretary) formData.append("secretary", newEvent.secretary);
+    if (newEvent.treasurer) formData.append("treasurer", newEvent.treasurer);
+    if (imageFile) formData.append("image", imageFile);
     try {
       const response = await fetch("http://localhost:5000/api/addproject", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...newEvent,
-          time: formattedTime, // Convert HH:MM to HH:MM:SS
-        }),
+        body: formData,
       });
   
       if (!response.ok) {
         throw new Error("Failed to create project");
       }
+      const newProject = await response.json();
+      onProjectAdded(newProject);
   
       setIsFormVisible(false);
       setNewEvent({
@@ -70,20 +74,19 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
         description: "",
         chairman: "",
         secretary: "",
-        treasure: "",
+        treasurer: "",
         image: "",
         category: null,
         status: 1,
       });
   
       setImageFile(null);
-      setPreview('');
+      setPreview("");
     } catch (error) {
       console.error("Error creating project:", error);
     }
   };
   
-
   const getProspectNames = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/getUserNames/Prospect`);
@@ -92,20 +95,17 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-
       const data = await response.json();
-
-      // Ensure the response is an array
       setProspectName(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching prospect names:", error);
-      setProspectName([]); // Set empty array if an error occurs
+      setProspectName([]); 
     }
   };
 
   useEffect(() => {
-    getProspectNames(); // Fetch prospect names when the component mounts
-  }, []); // Empty dependency array ensures it runs only once
+    getProspectNames();
+  }, []); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -121,7 +121,7 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-800">Add New Project</h2>
           <button
-            onClick={() => setIsFormVisible(false)} // Close the form when clicked
+            onClick={() => setIsFormVisible(false)}
             className="text-gray-500 hover:text-red-500"
             title="Close"
           >
@@ -142,7 +142,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 required
               />
             </div>
-
             <div>
               <label className="font-bold">Project Date</label>
               <input
@@ -153,7 +152,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 className="border rounded p-2 w-full"
               />
             </div>
-
             <div>
               <label className="font-bold">Project Time</label>
               <input
@@ -164,7 +162,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 className="border rounded p-2 w-full"
               />
             </div>
-
             <div>
               <label className="font-bold">Project Location</label>
               <input
@@ -176,7 +173,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 placeholder="Venue"
               />
             </div>
-
             <div className="col-span-2">
               <label className="font-bold">Project Image</label>
               <div
@@ -191,7 +187,6 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 )}
               </div>
             </div>
-
             <div>
               <label className="font-bold">Project Chairman</label>
               <select
@@ -208,11 +203,10 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 ))}
               </select>
             </div>
-
             <div>
               <label className="font-bold">Project Secretary</label>
               <select
-                name="secretary" // Fix typo here: was "secratary"
+                name="secretary" 
                 value={newEvent.secretary}
                 onChange={handleInputChange}
                 className="border rounded p-2 w-full"
@@ -225,11 +219,10 @@ const CreateProjectForm = ({ setIsFormVisible }) => {
                 ))}
               </select>
             </div>
-
             <div>
               <label className="font-bold">Project Treasurer</label>
               <select
-                name="treasure" // Fix typo here: was "treasure"
+                name="treasure" 
                 value={newEvent.treasure}
                 onChange={handleInputChange}
                 className="border rounded p-2 w-full"

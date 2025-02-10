@@ -9,15 +9,15 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const PresidentCard = ({
   title = "",
   count = 0,
-  pendingTaskCount = 0,
-  totalTaskCount = 0,
+  pendingTackCount = 0, 
+  doneTaskCount = 0,
   timeOutTaskCount = 0,
 
 }) => {
-  const doneTaskCount = totalTaskCount - (pendingTaskCount + timeOutTaskCount);
-  const doneTaskPercentage =totalTaskCount > 0 ? (doneTaskCount  / totalTaskCount) * 100 : 0;
+  const totalTaskCount =parseInt (doneTaskCount)+parseInt(pendingTackCount) + parseInt(timeOutTaskCount);
+  const doneTaskPercentage = totalTaskCount > 0 ? (doneTaskCount  / totalTaskCount) * 100 : 0;
   const timeOutTaskPresentage = totalTaskCount > 0 ? (timeOutTaskCount / totalTaskCount) * 100 : 0;
-  const pendingTaskPresentage = totalTaskCount > 0 ? (pendingTaskCount / totalTaskCount) * 100 : 0;
+  const pendingTaskPresentage = totalTaskCount > 0 ? (pendingTackCount / totalTaskCount) * 100 : 0;
 
   const pieChartData = {
     labels: ["Delayed Task" , "Pending Tasks", "Done Tasks"],

@@ -59,17 +59,16 @@ const HomePage = () => {
 
           {/* Course Cards Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 ">
-            {project.map((course, index) => {
-              console.log(`Project ID for course ${index + 1}:`, course.projectid); // Log projectId for each course
+            {project.map((project, index) => {
               return (
                 <ProjectCard
                   key={index}
-                  title={course.projectname}
-                  image={course.image}
-                  time={ course.time.split("+")[0].slice(0, 5) }
-                  venue={course.venue}
-                  date={ new Date(course.date).toISOString().split("T")[0] }
-                  projectId={course.projectid} 
+                  title={project.projectname}
+                  image={project.image}
+                  time={ project.time.split("+")[0].slice(0, 5) }
+                  venue={project.venue}
+                  date={ new Date(project.date).toISOString().split("T")[0] }
+                  projectId={project.projectId} 
                 />
               );
             })}

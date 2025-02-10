@@ -39,10 +39,10 @@ const PresidentDashboard = () => {
         throw new Error("Failed to fetch project task count");
       }
       const data = await response.json();
-      setProjectTaskCount(data)
+      setProjectTaskCount(data.length > 0 ? data[0] : {});
     } catch (error) {
       console.error("Error fetching project task count:", error);
-      setProjectTaskCount([]);
+      setProjectTaskCount({});
     }
   };
 
@@ -124,6 +124,9 @@ const PresidentDashboard = () => {
     ongoingProjectCount    
   } : null;
   console.log("ppt",allMonthTreasures);
+  console.log(projectTaskCount.pendingTasks)
+  console.log(projectTaskCount.doneTasks)
+  console.log(projectTaskCount.timeoutTasks)
   return (
     <AuthWrapper>
       {(userName) => (
@@ -134,13 +137,13 @@ const PresidentDashboard = () => {
             </h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-              {combinedData && (
+              {projectTaskCount && ongoingProjectCount &&(
                 <PresidentCard
                   title="Ongoing Projects"
-                  count={combinedData.ongoingProjectCount}
-                  pendingTackCount={combinedData.pendingtasks}
-                  totalTaskCount={combinedData.totaltasks}
-                  timeOutTaskCount={combinedData.timeouttasks}
+                  count={ongoingProjectCount}
+                  pendingTackCount={projectTaskCount.pendingTasks}
+                  doneTaskCount={projectTaskCount.doneTasks}
+                  timeOutTaskCount={projectTaskCount.timeoutTasks}
                 /> 
               )}
 

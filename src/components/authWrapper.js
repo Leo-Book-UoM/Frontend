@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Typewriter } from "react-simple-typewriter";
 
 const AuthWrapper = ({ children }) => {
   const [userName, setUserName] = useState(null);
@@ -38,7 +37,6 @@ const AuthWrapper = ({ children }) => {
 
   return (
     <div>
-      {/* Pass userName to children as prop */}
       {children && typeof children === "function" ? children(userName) : children}
     </div>
   );

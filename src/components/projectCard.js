@@ -12,19 +12,14 @@ const CourseCard = ({
   date = "N/A",
   venue = "Unknown Venue",
   projectId,
+  handleCardClick
 }) => {
   const router = useRouter();
 
-  const handleCardClick = () => {
-    console.log("Clicked Project ID:", projectId);
-    router.push(`/projectContent?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}&projectId=${encodeURIComponent(projectId)}`
-    );
-  };
-
   return (
     <div
-      className="bg-gradient-to-r from-gray-700 to-indigo-900 text-gray-200 rounded shadow-lg p-4 cursor-pointer hover:shadow-xl transition-shadow border-2 border-blue-900"
-      onClick={handleCardClick}
+      className="bg-gray-800 text-gray-200 rounded shadow-lg p-4 cursor-pointer hover:shadow-xl transition-shadow border-2 border-blue-900"
+      onClick={handleCardClick} 
       role="button"
       tabIndex={0}
       onKeyPress={(e) => e.key === "Enter" && handleCardClick()}
@@ -51,8 +46,8 @@ const CourseCard = ({
           <p className="hover:text-yellow-400">{time}</p>
         </div>
         <div className="flex items-center space-x-2 mb-2">
-          <AiOutlineCalendar className="text-blue-600" />
-          <span className="hover:text-blue-600">{date}</span>
+          <AiOutlineCalendar className="text-green-600" />
+          <span className="hover:text-green-600">{date}</span>
         </div>
       </div>
     </div>

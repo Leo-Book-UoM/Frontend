@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 const AuthWrapper = ({ children }) => {
   const [userName, setUserName] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -17,6 +18,7 @@ const AuthWrapper = ({ children }) => {
         if (response.status === 200) {
           const data = await response.json();
           setUserName(data.userName);
+          setUserRole(data.roleName);
         } else {
           router.push("/login"); // Redirect if not authenticated
         }
@@ -29,7 +31,17 @@ const AuthWrapper = ({ children }) => {
     };
 
     fetchUser();
-  }, []);
+  }, [router]);
+
+  useEffect(() => {
+    if(userRole) {
+      if(userRole === "President"){
+        router.push("/presidentDashboard");
+      }else if(userRole === "Scretary"){
+        router.push("/secretaryDashboard");
+      }
+    }
+  },[userRole, router]);
 
   if (loading) {
     return <p>Loading...</p>; // Show loading while checking authentication

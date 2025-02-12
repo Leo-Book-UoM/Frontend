@@ -123,10 +123,10 @@ const PresidentDashboard = () => {
     ...projectTaskCount,
     ongoingProjectCount    
   } : null;
-  console.log("ppt",allMonthTreasures);
-  console.log(projectTaskCount.pendingTasks)
-  console.log(projectTaskCount.doneTasks)
-  console.log(projectTaskCount.timeoutTasks)
+  // console.log("ppt",allMonthTreasures);
+  // console.log(projectTaskCount.pendingTasks)
+  // console.log(projectTaskCount.doneTasks)
+  // console.log(projectTaskCount.timeoutTasks)
   return (
     <AuthWrapper>
       {(userName) => (
@@ -171,7 +171,8 @@ const PresidentDashboard = () => {
             </div>
           </main>
         </Layout>
-      )}
+      )
+      }
     </AuthWrapper>
   );
 };

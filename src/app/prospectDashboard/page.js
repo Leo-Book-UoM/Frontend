@@ -4,10 +4,13 @@ import Layout from "../mainlayout";
 import ProjectCard from "../../components/projectCard";
 import AddItemButton from "../../components/addItemButton";
 import CreateProjectForm from "../../components/projectCreationForm";
+import { useRouter } from "next/navigation";
+
 
 const HomePage = () => {
   const [project, setProject] = useState([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const router = useRouter();
 
   const fetchProjects = async () => {
     try {
@@ -30,6 +33,11 @@ const HomePage = () => {
     setIsFormVisible(false);
     await fetchProjects();
   }
+
+  const handleCardClick = (project) => {
+    router.push(`/projectContent?title=${encodeURIComponent(project.projectname)}&image=${encodeURIComponent(project.image)}&projectId=${encodeURIComponent(project.projectId)}`
+    );
+  };
 
   return (
     <Layout>
@@ -68,7 +76,8 @@ const HomePage = () => {
                   time={ project.time.split("+")[0].slice(0, 5) }
                   venue={project.venue}
                   date={ new Date(project.date).toISOString().split("T")[0] }
-                  projectId={project.projectId} 
+                  projectId={project.projectId}
+                  handleCardClick={() => handleCardClick(project)}
                 />
               );
             })}

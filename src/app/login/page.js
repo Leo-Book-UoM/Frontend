@@ -1,14 +1,14 @@
-"use client"; // Mark as client-side component
+"use client";
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // For App Router
+import { useRouter } from 'next/navigation'; 
 import api from '@/api/authAPI';
-import Cookies from 'js-cookie'; // To handle cookies
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   // Validate email
@@ -42,19 +42,40 @@ export default function Login() {
     }
 
     if (valid) {
+      setLoading(true)
       try {
         const response = await api.post('/login', { email, password });
-        if (response.status === 200) {
-              router.push('/presidentDashboard'); // Redirect to the dashboard
-        } else {
-          alert(response.data.message); // Show error message from the server
+        if (response.status === 200){
+             const userResponse = await fetch("http://localhost:5000/api/authuser", {
+              credentials: "include",
+            });
+          
+            if (userResponse.status === 200) {
+                const data = await userResponse.json();
+                console.log("User role:",data.roleName);
+          
+                if (data.roleName === "President") {
+                  router.push("/presidentDashboard");
+                } else if (data.roleName === "Scretary") {
+                  router.push("/secretaryDashboard");
+                }else {
+                    router.push("/login");
+                }
+            }else{
+              router.push("/login"); //Redirect if not authenticated
+            }
+          }else {
+            alert(response.data.message);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Something went wrong. Please try again.');
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Something went wrong. Please try again.');
       }
-    }
-  };
+    };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-800" style={{ backgroundImage: "url('/images/background.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}>

@@ -8,24 +8,21 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PresidentCard = ({
   title = "",
-  count = 0,
-  pendingTackCount = 0, 
-  doneTaskCount = 0,
-  timeOutTaskCount = 0,
+  totalCount = 0,
+  reportedToClubSecretary = 0, 
+  notReportedToClubSecretary = 0,
+  submittedProjectsCount = 0,
 
 }) => {
-  const totalTaskCount =parseInt (doneTaskCount)+parseInt(pendingTackCount) + parseInt(timeOutTaskCount);
-  const doneTaskPercentage = totalTaskCount > 0 ? (doneTaskCount  / totalTaskCount) * 100 : 0;
-  const timeOutTaskPresentage = totalTaskCount > 0 ? (timeOutTaskCount / totalTaskCount) * 100 : 0;
-  const pendingTaskPresentage = totalTaskCount > 0 ? (pendingTackCount / totalTaskCount) * 100 : 0;
+  const totalProjectCount =parseInt (totalCount);
 
   const pieChartData = {
-    labels: ["Delayed Task" , "Pending Tasks", "Done Tasks"],
+    labels: ["Delayed Reports" , "To do Reports", "Submitted Reports"],
     datasets: [
       {
-      data: [timeOutTaskPresentage, pendingTaskPresentage, doneTaskPercentage],
-      backgroundColor: ["#FF6384", "#FFCD56", "#4BC0C0"],
-      borderColor: ["#FF6384", "#FFCD56", "#4BC0C0"],
+      data: [ notReportedToClubSecretary, reportedToClubSecretary, submittedProjectsCount],
+      backgroundColor: ["#FF6384", "#FFCD56", "#80EF80"],
+      borderColor: ["#FF6384", "#FFCD56", "#80EF80"],
       borderWidth: 1,
       },
     ],
@@ -45,30 +42,30 @@ const PresidentCard = ({
   cutout: "60%"
   };
 
-  let percentageColorClass = "";
-  if(doneTaskPercentage <= 40){
-    percentageColorClass ="text-red-400";
-  }else if (doneTaskPercentage <= 70 && doneTaskPercentage > 40){
-    percentageColorClass ="text-yellow-400";
-  } else {
-    percentageColorClass = "text-green-400";
-  }
 
   return (
-    <div className="bg-gradient-to-r from-gray-700 to-indigo-900 p-6 pb-8 lg:pb-12 rounded-xl shadow-lg w-full min-h-[150px] flex flex-col justify-between">
+    <div className="bg-gradient-to-r from-gray-700 to-indigo-900 p-6 pb-8 lg:pb-3 rounded-xl shadow-lg w-full min-h-[150px] flex flex-col justify-between">
       <div className="flex justify-between  sm:flex-col md:flex-row">
         <div>
-          <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>
-          <h2 className="text-white font-bold text-2xl">{count}</h2>
-          <p className="text-sm text-gray-300 mt-9">
-      <span className="">Done Status</span>
-        <span style={{ fontSize: "18px" }}className={`flex items-center   ${percentageColorClass}`}>
-          <span className="pt-6" /> {doneTaskPercentage.toFixed(2)}%
+          <p className="text-sm uppercase text-gray-300 ">Total Projects to report</p>
+          <h2 className="text-white font-bold text-2xl">{totalProjectCount}</h2>
+          <p className="text-sm text-gray-300 mt-2">
+      <span style={{color: "#80EF80"}}className="">Submitted Reports</span>
+        <span style={{ fontSize: "18px", color: "#80EF80", fontWeight:"bold" }}className={`flex items-center `}>
+          <span className="pt-6" /> {submittedProjectsCount}
+        </span>
+        <span style={{color: "#FFCD56"}} className="">To do Reports</span>
+        <span style={{ fontSize: "18px" ,color: "#FFCD56", fontWeight:"bold"}}className={`flex items-center  `}>
+          <span className="pt-6" /> {reportedToClubSecretary}
+        </span>
+        <span style={{color: "#FF6384"}} className="">Delayed Reports</span>
+        <span style={{ fontSize: "18px",color: "#FF6384", fontWeight:"bold" }}className={`flex items-center  `}>
+          <span className="pt-6" /> {notReportedToClubSecretary}
         </span>
       </p>
         </div>
         <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[80px]  sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[120px] lg:h-[120px] ">
-          <h2 className="text-base  text-gray-300 mb-2">Task Distribution</h2>
+          <h2  className="text-base  text-gray-300 mb-2">Reports Distribution</h2>
             <Pie data={pieChartData} options={pieChartOptions} />
         </div>
       </div>

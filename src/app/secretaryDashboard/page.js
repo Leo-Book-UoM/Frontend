@@ -1,70 +1,87 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SecretaryLayout from '@/app/secrataryLayout'
 import AuthWrapper from '@/components/authWrapper'
 import DisplayUserName from '@/components/displayUserName'
+import SecretaryProjectStatusCard from '@/components/secretaryProjectReportingStatusCard'
+import PresidentProjectAttributeCard from '@/components/presidentProjectAttributeCard'
+import PresidentMonthlyProjectCard from '@/components/presidentMonthlyProjectCard'
 
 function page() {
-  const [projectSecretaryNotSubCount, setProjectSecretaryNotSubCount] = useState(0);
-  const [clubSecretaryNotSubmitted, setClubSecretaryNotSubmitted] = useState(0);
-  const [submittedToDistrict, setSubmittedToDistrict] = useState(0);
-  const [lastMonthTotal, setLastMonthTotal] = useState(0);
+const [projectReportStatus, setProjectReportStatus] = useState({
+  notReportedToClubSecretary: "0",
+  reportedToClubSecretary: "0",
+  reportedToDistrict: "0",
+  totalProjectsPreviousMonth: "5"
+});
+const [projectAttributeCount, setProjectAttributeCount] = useState({});
+const [monthlyProjectCont, setMonthlyProjectCount] = useState({});
+const [monthProjectCount, setMonthProjectCount] = useState({projectcount: "0"});
+const [upcommingProjects, setUpcommingProjects] = useState(0);
 
-  const fetchNotreportedProjectCount = async () => {
-    try{
-      const response = await fetch(`http://localhost:5000/api/getUnSubmittedReportsCountsToClub`);
-      if(!response.ok){
-        throw new Error('Faild to fetch club secratary and project secretary both are not submitted project count')
-      }
-      const data = await response.json();
-      setProjectSecretaryNotSubCount(data);
-    }catch(error){
-      console.error("Error fetching club secratary and project secretary both are not submitted project count:", error);
-      setProjectSecretaryNotSubCount(0);
+const fetchProjectReportingStatus = async () => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/getProjectReportingStatus`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch project repoted status");
     }
+    const data = await response.json();
+    setProjectReportStatus(data); 
+  } catch (error) {
+    console.error("Error fetching project repoted status:", error);
+    setProjectReportStatus(0);
   }
+};
 
-  const fetchProjectCountToBeSubmitted = async () => {
-    try{
-      const response = await fetch(`http://localhost:5000/api/getSubmittedReportsCountsToClub`);
-      if(!response.ok){
-        throw new Error('Faild to fetch project secretary submitted but club secretary not submitted project count');
-      }
-      const data = await response.json(data);
-      setClubSecretaryNotSubmitted(data);
-    }catch(error){
-      console.error("Error fetching project secretary submitted but club secretary not submitted project count:", error);
-      setClubSecretaryNotSubmitted(0);
+const fetchProjectAttributeCounts = async () => {
+  try{
+    const response = await fetch("http://localhost:5000/api/attributeCounts");
+    if(!response.ok){
+      throw new Error("Failed to fetch project attribute count");
     }
+    const data = await response.json();
+    setProjectAttributeCount(data);
+  }catch(error){
+    console.error("Error fetching project attribute count:", error);
+    setProjectAttributeCount({});
   }
+};
 
-  const fetchSubmittedProjectCount = async () => {
-    try{
-      const response = await fetch(`http://localhost:5000/api/getSubmittedReportsCountsToDistrict`);
-      if(!response.ok){
-        throw new Error('Faild to fetch club secretary submitted project count')
-      }
-      const data = await response.json(data);
-      setSubmittedToDistrict(data);
-    }catch(error){
-      console.error("Error fetching club secretary submitted project count:", error);
-      setSubmittedToDistrict(0);
+const fetchMonthlyProjectCount = async () => {
+  try {
+    const response = await fetch("http://localhost:5000/api/monthlyProjectCount");
+    if(!response.ok){
+      throw new Error("Failed to fetch month project count");
     }
+    const data = await response.json();
+    setMonthProjectCount(data.thisMonthCount || { projectcount: "0" });
+    setMonthlyProjectCount(Array.isArray(data.allMonthCounts) ? data.allMonthCounts : []);
+  } catch(error){
+    console.error("Error fetching month project count:", error);
+    setMonthlyProjectCount({});
+    setMonthProjectCount({projectcount: "0"});
   }
+};
 
-  const fetchLastMonthTotal = async () => {
-    try{
-      const response = await fetch(`http://localhost:5000/api/getProjectCountsAtPreviousMonth`);
-      if(!response.ok){
-        throw new Error('Faild to fetch last month project count')
-      }
-      const data = await response.json(data);
-      setLastMonthTotal(data);
-    }catch(error){
-      console.error("Error fetching last month project count:", error);
-      setLastMonthTotal(0);
+const fetchUpcommingProjectCount = async () => {
+  try{
+    const response = await fetch("http://localhost:5000/api/upcommingprojects");
+    if(!response.ok){
+      throw new Error("Failed to fetch upcomming project count");
     }
+    const data = await response.json();
+    setUpcommingProjects(data);
+  }catch(error){
+    console.error("Error fetching upcomming project count:", error);
+    setUpcommingProjects(0);
   }
+};
+useEffect(() =>{
+  fetchProjectReportingStatus();
+  fetchProjectAttributeCounts();
+  fetchMonthlyProjectCount();
+  fetchUpcommingProjectCount();
+},[]);
   return (
     <AuthWrapper>
       {(userName) => (
@@ -72,16 +89,30 @@ function page() {
         <main className="max-w-6xl mx-auto py-8">
         <DisplayUserName userName={userName} />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-          {projectTaskCount && ongoingProjectCount &&(
-                  <PresidentCard
-                    title="Ongoing Projects"
-                    count={ongoingProjectCount}
-                    pendingTackCount={projectTaskCount.pendingTasks}
-                    doneTaskCount={projectTaskCount.doneTasks}
-                    timeOutTaskCount={projectTaskCount.timeoutTasks}
+          {projectReportStatus &&(
+                  <SecretaryProjectStatusCard
+                    title="Reporting Status"
+                    totalCount={projectReportStatus.totalProjectsPreviousMonth}
+                    reportedToClubSecretary={projectReportStatus.reportedToClubSecretary}
+                    notReportedToClubSecretary={projectReportStatus.notReportedToClubSecretary}
+                    submittedProjectsCount={projectReportStatus.reportedToDistrict}
                   /> 
                 )}
-
+              {monthProjectCount && monthlyProjectCont && upcommingProjects && (
+                <PresidentMonthlyProjectCard
+                  title="This Month's Projects"
+                  count={monthProjectCount.project_count}
+                  data = {monthlyProjectCont}
+                  upcommingProjectsCount = {upcommingProjects}
+                /> 
+              )}
+              {projectAttributeCount && (
+                <PresidentProjectAttributeCard
+                  title="Total Attributes"
+                  totalAttributeCount={projectAttributeCount.attribute_count}
+                  doneAttributeCount={projectAttributeCount.done_attribute_count}
+                /> 
+              )}
         </div>
         </main>
         </SecretaryLayout>

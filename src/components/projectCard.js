@@ -23,7 +23,7 @@ const CourseCard = ({
 
   return (
     <div
-      className="bg-gray-800 text-gray-200 rounded shadow-lg p-4 cursor-pointer hover:shadow-xl transition-shadow border-2 border-blue-900"
+      className="bg-gradient-to-r from-gray-700 to-indigo-900 text-gray-200 rounded shadow-lg p-4 cursor-pointer hover:shadow-xl transition-shadow border-2 border-blue-900"
       onClick={handleCardClick}
       role="button"
       tabIndex={0}

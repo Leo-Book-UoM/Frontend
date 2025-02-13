@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const AuthWrapper = ({ children }) => {
   const [userName, setUserName] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -20,7 +21,7 @@ const AuthWrapper = ({ children }) => {
           setUserName(data.userName);
           setUserRole(data.roleName);
         } else {
-          router.push("/login"); // Redirect if not authenticated
+          router.push("/login"); 
         }
       } catch (error) {
         console.error("Error:", error);
@@ -35,9 +36,9 @@ const AuthWrapper = ({ children }) => {
 
   useEffect(() => {
     if(userRole) {
-      if(userRole === "President"){
+      if(userRole === "President" && pathname !== "/presidentDashboard"){
         router.push("/presidentDashboard");
-      }else if(userRole === "Scretary"){
+      }else if(userRole === "Scretary" && pathname !== "/secretaryDashboard" && !pathname.startsWith("/secretary")){
         router.push("/secretaryDashboard");
       }
     }

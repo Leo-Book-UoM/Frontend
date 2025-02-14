@@ -34,8 +34,8 @@ const HomePage = () => {
     await fetchGeneralMeetings();
   }
 
-  const handleCardClick = (project) => {
-    router.push(`/projectContent?title=${encodeURIComponent(project.projectname)}&image=${encodeURIComponent(project.image)}&projectId=${encodeURIComponent(project.projectId)}`
+  const handleCardClick = (generalMeeting) => {
+    router.push(`/generalMeetingContent?title=${encodeURIComponent(generalMeeting.meetingName)}&image=${encodeURIComponent(generalMeeting.image)}&projectId=${encodeURIComponent(generalMeeting.meetingId)}`
     );
   };
 

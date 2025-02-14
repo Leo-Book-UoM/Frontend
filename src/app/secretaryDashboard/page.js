@@ -6,6 +6,7 @@ import DisplayUserName from "@/components/displayUserName";
 import SecretaryProjectStatusCard from "@/components/secretaryProjectReportingStatusCard";
 import PresidentProjectAttributeCard from "@/components/presidentProjectAttributeCard";
 import PresidentMonthlyProjectCard from "@/components/presidentMonthlyProjectCard";
+import SecretaryMeetingParticipentsCard from "@/components/secretaryMeetingStatusCard";
 
 function Page() {
   const [projectReportStatus, setProjectReportStatus] = useState({
@@ -18,6 +19,8 @@ function Page() {
   const [monthlyProjectCont, setMonthlyProjectCount] = useState([]);
   const [monthProjectCount, setMonthProjectCount] = useState({ projectcount: "0" });
   const [upcommingProjects, setUpcommingProjects] = useState(0);
+  const [gmParticipents, setGMParticipents] = useState({month_name:'', participant_count: null});
+  const [lastMonthGMParticipents, setLastMonthGMParticipents] = useState({month_name:'', participant_count: null});
 
   const fetchProjectReportingStatus = async () => {
     try {
@@ -63,7 +66,7 @@ function Page() {
   const fetchUpcommingProjectCount = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/upcommingprojects");
-      if (!response.ok) throw new Error("Failed to fetch upcoming project count");
+      if (!response.ok){ throw new Error("Failed to fetch upcoming project count");}
 
       const data = await response.json();
       setUpcommingProjects(data);
@@ -73,12 +76,41 @@ function Page() {
     }
   };
 
+  const fetchMonthlyGMParticipents = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/getGMParticipentsCount");
+      if (!response.ok) {
+        throw new Error("Failed to fetch Monthly GM participants");
+      }
+  
+      const data = await response.json();
+      
+      if (Array.isArray(data) && data.length > 0) {
+        setGMParticipents(data);
+      } else {
+        setGMParticipents([]);
+      }
+    } catch (error) {
+      console.error("Error fetching Monthly GM participants:", error);
+      setGMParticipents([]);
+    }
+  };
+
   useEffect(() => {
     fetchProjectReportingStatus();
     fetchProjectAttributeCounts();
     fetchMonthlyProjectCount();
     fetchUpcommingProjectCount();
+    fetchMonthlyGMParticipents();
   }, []);
+
+  useEffect(() => {
+    if (gmParticipents.length > 0) {
+      setLastMonthGMParticipents(gmParticipents[gmParticipents.length - 1]);
+    } else {
+      setLastMonthGMParticipents({ month_name: '', participant_count: 0 });
+    }
+  }, [gmParticipents]);
 
   return (
     <AuthWrapper>
@@ -109,6 +141,13 @@ function Page() {
                   title="Total Attributes"
                   totalAttributeCount={projectAttributeCount.attribute_count}
                   doneAttributeCount={projectAttributeCount.done_attribute_count}
+                />
+              )}
+              {gmParticipents && lastMonthGMParticipents &&(
+                <SecretaryMeetingParticipentsCard
+                  title="This Month's Projects"
+                  count={lastMonthGMParticipents.participant_count}
+                  data={gmParticipents}
                 />
               )}
             </div>

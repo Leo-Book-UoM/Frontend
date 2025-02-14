@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaTimes } from 'react-icons/fa';
 
-const CreateGeneralMeetingForm = ({ setIsFormVisible , onProjectAdded}) => {
+const CreateGeneralMeetingForm = ({ setIsFormVisible, onProjectAdded }) => {
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState('');
   const [newEvent, setNewEvent] = useState({
-    title: "",
-    date: "",
-    time: "",
-    location: "",
-    otherClubs:[],
+    title: '',
+    date: '',
+    time: '',
+    location: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -24,56 +24,60 @@ const CreateGeneralMeetingForm = ({ setIsFormVisible , onProjectAdded}) => {
     accept: 'image/*',
     multiple: false,
   });
-  
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
+    
     if (!newEvent.title.trim()) {
-      alert("Meeting Name is required");
+      alert('Meeting Name is required');
       return;
     }
-  
+
+    setLoading(true);
+    
+    // Format time to HH:MM:SS
     let formattedTime = newEvent.time ? `${newEvent.time}:00` : null;
 
-    // Create FormData instance for file upload
+    // Create FormData for file upload
     const formData = new FormData();
-    formData.append("title", newEvent.title);
-    formData.append("date", newEvent.date);
-    formData.append("time", formattedTime);
-    formData.append("location", newEvent.location);
-    formData.append("otherClubs", JSON.stringify(newEvent.otherClubs));
+    formData.append('title', newEvent.title);
+    formData.append('date', newEvent.date);
+    formData.append('time', formattedTime);
+    formData.append('location', newEvent.location);
 
-    // Append the image file if selected
     if (imageFile) {
-      formData.append("image", imageFile);
+      formData.append('image', imageFile);
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/createGeneralMeeting", {
-        method: "POST",
+      const response = await fetch('http://localhost:5000/api/createGeneralMeeting', {
+        method: 'POST',
         body: formData,
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to create meeting: ${errorText}`);
       }
-      const newProject = await response.json();
-      onProjectAdded(newProject);
+
+      const newMeeting = await response.json();
+      onProjectAdded(newMeeting);
       setIsFormVisible(false);
 
+      // Reset form
       setNewEvent({
-        title: "",
-        date: "",
-        time: "",
-        location: "",
-        otherClubs: [],
+        title: '',
+        date: '',
+        time: '',
+        location: '',
       });
-  
       setImageFile(null);
-      setPreview("");
+      setPreview('');
     } catch (error) {
-      console.error("Error creating project:", error);
+      console.error('Error creating meeting:', error);
+      alert('An error occurred while creating the meeting.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,7 +112,7 @@ const CreateGeneralMeetingForm = ({ setIsFormVisible , onProjectAdded}) => {
                 value={newEvent.title}
                 onChange={handleInputChange}
                 className="border rounded p-2 w-full"
-                placeholder="Project Name"
+                placeholder="Meeting Name"
                 required
               />
             </div>
@@ -163,9 +167,12 @@ const CreateGeneralMeetingForm = ({ setIsFormVisible , onProjectAdded}) => {
             <div className="col-span-2 flex justify-center">
               <button
                 type="submit"
-                className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600"
+                className={`px-4 py-2 rounded shadow ${
+                  loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+                } text-white`}
+                disabled={loading}
               >
-                Add General Meeting
+                {loading ? 'Saving...' : 'Add General Meeting'}
               </button>
             </div>
           </div>

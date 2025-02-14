@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PresidentCard = ({
+const SecretaryProjectStatusCard = ({
   title = "",
   totalCount = 0,
   reportedToClubSecretary = 0, 
@@ -79,4 +79,4 @@ const PresidentCard = ({
   );
 };
 
-export default PresidentCard;
+export default SecretaryProjectStatusCard;

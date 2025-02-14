@@ -2,19 +2,19 @@ import React from "react";
 import { FaArrowUp, FaChartBar } from "react-icons/fa";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
+import { useRouter } from "next/navigation";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PresidentCard = ({
+const SecretaryProjectStatusCard = ({
   title = "",
   totalCount = 0,
   reportedToClubSecretary = 0, 
   notReportedToClubSecretary = 0,
   submittedProjectsCount = 0,
-
 }) => {
   const totalProjectCount =parseInt (totalCount);
+  const router = useRouter();
 
   const pieChartData = {
     labels: ["Delayed Reports" , "To do Reports", "Submitted Reports"],
@@ -41,10 +41,16 @@ const PresidentCard = ({
   maintainAspectRatio: true, 
   cutout: "60%"
   };
-
+  const handleCardClick = () => {
+    router.push(`/secretaryReportingProjects`);
+  };
 
   return (
-    <div className="bg-gradient-to-r from-gray-700 to-indigo-900 p-6 pb-8 lg:pb-3 rounded-xl shadow-lg w-full min-h-[150px] flex flex-col justify-between">
+    <div className="bg-gradient-to-r from-gray-700 to-indigo-900 p-6 pb-8 lg:pb-3 rounded-xl shadow-lg w-full min-h-[150px] flex flex-col justify-between"
+      onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      >
       <div className="flex justify-between  sm:flex-col md:flex-row">
         <div>
           <p className="text-sm uppercase text-gray-300 ">Total Projects to report</p>
@@ -73,4 +79,4 @@ const PresidentCard = ({
   );
 };
 
-export default PresidentCard;
+export default SecretaryProjectStatusCard;

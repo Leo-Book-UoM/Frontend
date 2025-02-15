@@ -59,7 +59,7 @@ const PresidentProjectAttributeCard = ({
       </p>
         </div>
         <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[80px]  sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[120px] lg:h-[120px] ">
-          <h2 className="text-base  text-gray-300 mb-2">Task Distribution</h2>
+          <h2 className="text-base  text-gray-300 mb-2">Attributes Distribution</h2>
             <Pie data={pieChartData} options={pieChartOptions} />
         </div>
       </div>

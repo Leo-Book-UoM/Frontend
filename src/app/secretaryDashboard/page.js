@@ -145,8 +145,9 @@ function Page() {
               )}
               {gmParticipents && lastMonthGMParticipents &&(
                 <SecretaryMeetingParticipentsCard
-                  title="This Month's Projects"
+                  title="Last GM's Attendance"
                   count={lastMonthGMParticipents.participant_count}
+                  month={lastMonthGMParticipents.month_name}
                   data={gmParticipents}
                 />
               )}

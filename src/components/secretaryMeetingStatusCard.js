@@ -12,6 +12,7 @@ const SecretaryMeetingParticipentsCard = ({
   count = 0,
   data,
   upcommingProjectsCount,
+  month
 }) => {
   
   const router = useRouter(); // Ensure this is inside the component
@@ -65,7 +66,7 @@ const SecretaryMeetingParticipentsCard = ({
 
   return (
     <div
-      className="bg-gradient-to-r from-gray-700 to-indigo-900 p-6 pb-8 lg:pb-12 rounded-xl shadow-lg w-full min-h-[150px] flex flex-col justify-between"
+      className="bg-gradient-to-r from-gray-700 to-indigo-900 p-6 pb-8 lg:pb-20 rounded-xl shadow-lg w-full min-h-[150px] flex flex-col justify-between"
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
@@ -75,14 +76,10 @@ const SecretaryMeetingParticipentsCard = ({
           <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>
           <h2 className="text-white font-bold text-2xl lg:mb-3">{count}</h2>
           <p className="text-sm text-gray-300 mt-5">
-            <span>Upcoming Projects</span>
-            <span style={{ fontSize: "18px" }} className={`flex items-center ${percentageColorClass}`}>
-              {upcommingProjectsCount}
-            </span>
           </p>
         </div>
         <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[300px] sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[350px] lg:h-[110px] ">
-          <h2 className="text-base text-gray-300 mb-2 lg:ml-12 sm:ml-6">Project Distribution</h2>
+          <h2 className="text-base text-gray-300 mb-2 lg:ml-12 sm:ml-6">General Meeting Attendance Distribution</h2>
           <Bar data={chartData} options={options} />
         </div>
       </div>

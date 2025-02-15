@@ -1,11 +1,11 @@
 "use client";
 import Layout from "../presidentlayout";
 import AuthWrapper from "../../components/authWrapper";
-import { Typewriter } from "react-simple-typewriter";
 import PresidentCard from "../../components/presidentProjectTaskCard";
 import PresidentMonthlyProjectCard from "@/components/presidentMonthlyProjectCard";
 import PresidentProjectAttributeCard from "@/components/presidentProjectAttributeCard";
 import PresidentTreasureDetailesCard from "@/components/presidentTreasureDetailesCard";
+import DisplayUserName from "@/components/displayUserName";
 import { useState, useEffect } from "react";
 
 const PresidentDashboard = () => {
@@ -39,10 +39,10 @@ const PresidentDashboard = () => {
         throw new Error("Failed to fetch project task count");
       }
       const data = await response.json();
-      setProjectTaskCount(data)
+      setProjectTaskCount(data.length > 0 ? data[0] : {});
     } catch (error) {
       console.error("Error fetching project task count:", error);
-      setProjectTaskCount([]);
+      setProjectTaskCount({});
     }
   };
 
@@ -123,24 +123,24 @@ const PresidentDashboard = () => {
     ...projectTaskCount,
     ongoingProjectCount    
   } : null;
-  console.log("ppt",allMonthTreasures);
+  // console.log("ppt",allMonthTreasures);
+  // console.log(projectTaskCount.pendingTasks)
+  // console.log(projectTaskCount.doneTasks)
+  // console.log(projectTaskCount.timeoutTasks)
   return (
     <AuthWrapper>
       {(userName) => (
         <Layout>
           <main className="max-w-6xl mx-auto py-8">
-            <h1 className="text-3xl font-bold text-indigo-600">
-              <Typewriter words={[`Hi, ${userName}!`]} loop={1} typeSpeed={150} />
-            </h1>
-
+            <DisplayUserName userName={userName} />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-              {combinedData && (
+              {projectTaskCount && ongoingProjectCount &&(
                 <PresidentCard
                   title="Ongoing Projects"
-                  count={combinedData.ongoingProjectCount}
-                  pendingTackCount={combinedData.pendingtasks}
-                  totalTaskCount={combinedData.totaltasks}
-                  timeOutTaskCount={combinedData.timeouttasks}
+                  count={ongoingProjectCount}
+                  pendingTackCount={projectTaskCount.pendingTasks}
+                  doneTaskCount={projectTaskCount.doneTasks}
+                  timeOutTaskCount={projectTaskCount.timeoutTasks}
                 /> 
               )}
 
@@ -171,7 +171,8 @@ const PresidentDashboard = () => {
             </div>
           </main>
         </Layout>
-      )}
+      )
+      }
     </AuthWrapper>
   );
 };

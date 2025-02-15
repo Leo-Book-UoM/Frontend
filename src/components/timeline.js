@@ -23,13 +23,7 @@ const EventTimeline = ({ projectId }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editTaskId, setEditTaskId] = useState(null);
-  const [newEvent, setNewEvent] = useState({
-    date: '',
-    title: '',
-    description: '',
-    group: '',
-    isDone: false,
-  });
+  const [newEvent, setNewEvent] = useState({date: '', title: '', description: '', group: '', isDone: false,});
 
   const toggleEvent = (id) => {
     setExpandedEvents((prev) =>
@@ -37,100 +31,6 @@ const EventTimeline = ({ projectId }) => {
     );
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewEvent({ ...newEvent, [name]: value });
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    if (newEvent.date && newEvent.title && newEvent.description && newEvent.group) {
-      if(isEditMode) {
-        try{
-          const response = await fetch (
-            `http://localhost:5000/api/editTask/${projectId}/${editTaskId}`,
-            {
-              method: 'PUT',
-              headers: {'content-Type' : 'application/json'},
-              body: JSON.stringify({
-                taskName: newEvent.title,
-                taskDescription: newEvent.description,
-                taskDate: newEvent.date,
-                markAsDone: newEvent.isDone ? 1 : 0,
-                taskCatagory: newEvent.group,
-              })
-            }
-          );
-          if(response.ok) {
-            setTimelineEvents((prev) => 
-              prev.map((task) => 
-                task.id === editTaskId
-            ? {...task, ...newEvent, id: editTaskId, isDone: task.isDone } : task
-              )
-            );
-            setIsEditMode(false);
-            setEditTaskId(null);
-            setNewEvent({ date: '', title: '', description: '', group: '' });
-            setIsFormVisible(false);
-          }else{
-            console.error('Failed to update task:', await response.json());
-          }
-        }catch(err) {
-          console.error('Error updating task:', err);
-        }
-      } else{
-      const newTask = {
-        projectid: projectId,
-        taskId: timelineEvents.length + 1,
-        taskName: newEvent.title,
-        taskDescription: newEvent.description,
-        taskDate: newEvent.date,
-        markAsDone: 0,
-        taskCatagory: newEvent.group,
-      };
-
-      try {
-        const response = await fetch('http://localhost:5000/api/addtask', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newTask),
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          const addedTask = {
-            id: result.task.taskId,
-            date: result.task.taskDate,
-            title: result.task.taskName,
-            description: result.task.taskDescription,
-            group: result.task.taskCatagory,
-            isDone: result.task.markAsDone,
-          };
-
-          // Add new task and update the timeline
-          const updatedTimeline = [...timelineEvents, addedTask];
-          setTimelineEvents(updatedTimeline);
-
-          // Recalculate current task
-          const today = new Date();
-          const current = updatedTimeline
-            .filter((task) => !task.isDone && new Date(task.date) >= today)
-            .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
-          setCurrentTask(current);
-
-          setNewEvent({ date: '', title: '', description: '', group: '' });
-          setIsFormVisible(false);
-        } else {
-          console.error('Failed to create task:', await response.json());
-        }
-      } catch (err) {
-        console.error('Error connecting to backend:', err);
-      }
-    }
-  }
-  };
   const handleEditTask = (task) => {
     setNewEvent({
       date: task.date,
@@ -174,7 +74,7 @@ const EventTimeline = ({ projectId }) => {
   };
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('en-GB', {
       weekday: 'long', 
       year: 'numeric',
       month: 'long', 
@@ -189,7 +89,6 @@ const EventTimeline = ({ projectId }) => {
         if (response.ok) {
           const data = await response.json();
 
-          // Ensure all tasks have a unique key and handle null categories
           const sanitizedTasks = data.tasks.map((task, index) => ({
             id: task.taskId || `${task.taskName}-${index}`,
             date: task.taskDate,
@@ -200,15 +99,13 @@ const EventTimeline = ({ projectId }) => {
           }));
 
           setTimelineEvents(sanitizedTasks);
-
-          // Determine the current task
           const today = new Date();
           const current = sanitizedTasks
             .filter((task) => !task.isDone && new Date(task.date) >= today)
             .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
           setCurrentTask(current);
         } else {
-          //console.error('Failed to fetch tasks:', await response.json());
+          console.error('Failed to fetch tasks:', await response.json());
         }
       } catch (err) {
         console.error('Error fetching tasks:', err);
@@ -296,15 +193,21 @@ const EventTimeline = ({ projectId }) => {
         
         <TaskCalendar tasks={timelineEvents} />
 
-      {/* Add Task Button */}
       <AddItemButton onClick={() => setIsFormVisible(true)} />
-      {/* Create Task Form */}
+      
        {isFormVisible && (
         <CreateTaskForm
          newEvent={newEvent}
-         handleInputChange={handleInputChange}
-         handleFormSubmit={handleFormSubmit}
          setIsFormVisible={setIsFormVisible}
+         setNewEvent = {setNewEvent}
+         isEditMode = {isEditMode}
+         projectId = {projectId}
+         editTaskId = {editTaskId}
+         setTimelineEvents= {setTimelineEvents}
+         setIsEditMode ={ setIsEditMode}
+         setEditTaskId = {setEditTaskId}
+         timelineEvents = {timelineEvents}
+         setCurrentTask = { setCurrentTask}
         />
       )}
     </div>

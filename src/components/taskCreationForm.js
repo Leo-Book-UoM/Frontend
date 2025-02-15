@@ -1,17 +1,138 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 const CreateTaskForm = ({
   newEvent,
-  handleInputChange,
-  handleFormSubmit,
   setIsFormVisible,
+  setNewEvent,
+  isEditMode,
+  projectId,
+  editTaskId,
+  setTimelineEvents,
+  setIsEditMode,
+  setEditTaskId,
+  timelineEvents,
+  setCurrentTask,
 }) => {
+  const [loading, setLoading] = useState(false);
+
+  const formatDate = (isoDate) => {
+    if(!isoDate) return '';
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+  
+    if (!newEvent.date || !newEvent.title || !newEvent.description || !newEvent.group) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+  
+    setLoading(true);
+    try {
+      if (isEditMode) {
+        const response = await fetch(
+          `http://localhost:5000/api/editTask/${projectId}/${editTaskId}`,
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              taskName: newEvent.title,
+              taskDescription: newEvent.description,
+              taskDate: newEvent.date,
+              markAsDone: newEvent.isDone ? 1 : 0,
+              taskCatagory: newEvent.group,
+            }),
+          }
+        );
+  
+        if (!response.ok) throw new Error('Failed to update task');
+        const updatedTask = await response.json();
+  
+        setIsEditMode(false);
+        setEditTaskId(null);
+
+        const updatedTasks = timelineEvents.map((task) =>
+          task.id === editTaskId
+            ? { ...task, title: updatedTask.task.taskName, 
+              description: updatedTask.task.taskDescription, 
+              date: formatDate(updatedTask.task.taskDate), 
+              group: updatedTask.task.taskCatagory }
+            : task
+        );
+  
+        setTimelineEvents(updatedTasks);
+  
+        const today = new Date();
+        const current = updatedTasks
+          .filter((task) => !task.isDone && new Date(task.date) >= today)
+          .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
+  
+        setCurrentTask(current);
+  
+      } else {
+        const response = await fetch('http://localhost:5000/api/addtask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectId,
+            taskName: newEvent.title,
+            taskDescription: newEvent.description,
+            taskDate: newEvent.date,
+            markAsDone: 0,
+            taskCatagory: newEvent.group,
+          }),
+        });
+
+        if (!response.ok) throw new Error('Failed to create task');
+        const result = await response.json();
+
+        const addedTask = {
+          id: result.task.taskId,
+          projectId: result.task.projectId,
+          date: result.task.taskDate,
+          title: result.task.taskName,
+          description: result.task.taskDescription,
+          group: result.task.taskCatagory,
+          isDone: 0,
+        };
+
+        setTimelineEvents((prev) => [...prev, addedTask]);
+
+        if (setCurrentTask) {
+          const today = new Date();
+          const current = [...timelineEvents, addedTask]
+            .filter((task) => !task.isDone && new Date(task.date) >= today)
+            .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
+          setCurrentTask(current);
+        }
+      }
+
+      setNewEvent({ date: '', title: '', description: '', group: '' });
+      setIsFormVisible(false);
+    } catch (error) {
+      console.error(error.message);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-96 shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Add New Task</h2>
+          <h2 className="text-xl font-bold text-gray-800">{isEditMode ? 'Edit Task' : 'Add New Task'}</h2>
           <button
             onClick={() => setIsFormVisible(false)}
             className="text-gray-500 hover:text-gray-700"
@@ -25,10 +146,9 @@ const CreateTaskForm = ({
             <input
               type="date"
               name="date"
-              value={newEvent.date}
+              value={ newEvent.taskDate }
               onChange={handleInputChange}
               className="border rounded p-2 w-full"
-              placeholder="Due Date"
               required
             />
             <input
@@ -56,9 +176,7 @@ const CreateTaskForm = ({
               className="border rounded p-2 w-full"
               required
             >
-              <option value="" disabled>
-                Select Task Group
-              </option>
+              <option value="" disabled>Select Task Group</option>
               <option value="Project Planning">Project Planning</option>
               <option value="Reporting">Reporting</option>
               <option value="Meetings">Meetings</option>
@@ -67,8 +185,9 @@ const CreateTaskForm = ({
             <button
               type="submit"
               className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600"
+              disabled={loading}
             >
-              Add Event
+              {loading ? 'Saving...' : isEditMode ? 'Update Task' : 'Add Task'}
             </button>
           </div>
         </form>

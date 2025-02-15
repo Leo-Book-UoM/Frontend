@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Typewriter } from "react-simple-typewriter";
+import { usePathname, useRouter } from "next/navigation";
 
 const AuthWrapper = ({ children }) => {
   const [userName, setUserName] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -18,8 +19,9 @@ const AuthWrapper = ({ children }) => {
         if (response.status === 200) {
           const data = await response.json();
           setUserName(data.userName);
+          setUserRole(data.roleName);
         } else {
-          router.push("/login"); // Redirect if not authenticated
+          router.push("/login"); 
         }
       } catch (error) {
         console.error("Error:", error);
@@ -30,7 +32,17 @@ const AuthWrapper = ({ children }) => {
     };
 
     fetchUser();
-  }, []);
+  }, [router]);
+
+  useEffect(() => {
+    if(userRole) {
+      if(userRole === "President" && pathname !== "/presidentDashboard"){
+        router.push("/presidentDashboard");
+      }else if(userRole === "Scretary" && pathname !== "/secretaryDashboard" && !pathname.startsWith("/secretary")){
+        router.push("/secretaryDashboard");
+      }
+    }
+  },[userRole, router]);
 
   if (loading) {
     return <p>Loading...</p>; // Show loading while checking authentication
@@ -38,7 +50,6 @@ const AuthWrapper = ({ children }) => {
 
   return (
     <div>
-      {/* Pass userName to children as prop */}
       {children && typeof children === "function" ? children(userName) : children}
     </div>
   );

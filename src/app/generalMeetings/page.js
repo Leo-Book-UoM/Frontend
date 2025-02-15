@@ -35,7 +35,7 @@ const HomePage = () => {
   }
 
   const handleCardClick = (generalMeeting) => {
-    router.push(`/generalMeetingContent?title=${encodeURIComponent(generalMeeting.meetingName)}&image=${encodeURIComponent(generalMeeting.image)}&projectId=${encodeURIComponent(generalMeeting.meetingId)}`
+    router.push(`/generalMeetingContent?title=${encodeURIComponent(generalMeeting.meetingName)}&image=${encodeURIComponent(generalMeeting.image)}&generalMeetingId=${encodeURIComponent(generalMeeting.meetingId)}`
     );
   };
 

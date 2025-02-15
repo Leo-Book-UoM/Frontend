@@ -6,10 +6,8 @@ import MainLayout from '@/app/mainlayout';
 const CourseTabs = React.memo(() => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-    // Get project ID once, so it does not trigger re-renders
     const projectId = useMemo(() => searchParams.get("projectId") || "", [searchParams]);
 
-    // Memoize tab labels (this prevents object recreation)
     const tabs = useMemo(() => ({
       projectContent: "Content",
       projectDocuments: "Documents",
@@ -20,16 +18,7 @@ const CourseTabs = React.memo(() => {
 
   const title = encodeURIComponent(searchParams.get('title') || "");
   const image = encodeURIComponent(searchParams.get("image") || "")
-  // const projectId = searchParams.get("projectId") || "";
 
-  // const tabs = {
-  //   projectContent: "Content",
-  //   projectDocuments: "Documents",
-  //   projectTreasure: "Treasure",
-  //   projectITEditorial: "IT & Editorial",
-  // };
-
-  // Function to determine if the current path matches the tab
   const getLinkClassName = (path) => {
     return pathname.startsWith(path)
       ? "border-b-2 border-white"

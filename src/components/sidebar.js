@@ -87,10 +87,10 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
           <img
   src={
     "https://my-portfolio-neon-zeta.vercel.app/static/media/profileImage.fd73f573600c742a5709.jpg" ||
-    "/default-profile.png"
+    "/images/background.jpg"
   }
   alt="profile"
-  onError={(e) => (e.target.src = "/default-profile.png")}
+  onError={(e) => (e.target.src = "/images/background.jpg")}
   className={`${
     isOpen ? "w-12 h-12 mb-0" : "w-10 h-10 mb-8"
   } transition-transform duration-500 rounded-full border-2 border-blue-500`}

@@ -2,7 +2,7 @@ import React from "react";
 import { FaArrowUp, FaChartBar } from "react-icons/fa";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
+import { useRouter } from "next/navigation";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -12,7 +12,7 @@ const PresidentProjectAttributeCard = ({
   doneAttributeCount = 0,
 }) => {
   const todoAttributeCount = totalAttributeCount > 0 ? (totalAttributeCount - doneAttributeCount) : 0;
-
+  const router = useRouter();
   const pieChartData = {
     labels: [ "Todo Attributes", "doneAttributeCount"],
     datasets: [
@@ -38,9 +38,16 @@ const PresidentProjectAttributeCard = ({
   maintainAspectRatio: true, 
   cutout: "60%"
   };
+  const handleCardClick = () => {
+    router.push(`/projectAttribute`);
+  };
 
   return (
-    <div className="bg-gradient-to-r from-gray-700 to-indigo-900 p-6 pb-8 lg:pb-12 rounded-xl shadow-lg w-full min-h-[150px] flex flex-col justify-between">
+    <div className="bg-gradient-to-r from-gray-700 to-indigo-900 p-6 pb-8 lg:pb-12 rounded-xl shadow-lg w-full min-h-[150px] flex flex-col justify-between"
+    onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      >
       <div className="flex justify-between  sm:flex-col md:flex-row">
         <div>
           <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>

@@ -1,9 +1,9 @@
-"use client"; // Add this if using Next.js 13+ App Router
+"use client"; 
 
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
-import { useRouter } from "next/navigation"; // Ensure this import is correct
+import { useRouter } from "next/navigation"; 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 

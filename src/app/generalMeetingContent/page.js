@@ -6,6 +6,7 @@ import ProjectContentImage from "@/components/projectContentImage";
 import GeneralMeetingTabs from "@/components/generalMeetingTabs";
 import OfficerAttendanceReport from "@/components/officerAttendance";
 
+
 const CoursePageContent = () => {
   const searchParams = useSearchParams();
   const courseParams = decodeURIComponent(searchParams.get("title")) || "Course Details";

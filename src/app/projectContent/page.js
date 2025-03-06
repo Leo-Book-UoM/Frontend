@@ -7,7 +7,7 @@ import EventTimeline from "@/components/timeline";
 import ProjectBudgetReport from "@/components/projectBudgetReport";
 import { useSearchParams } from "next/navigation";
 
-const CoursePage = () => {
+const ProjectContentPageComponent = () => {
   const searchParams = useSearchParams();
   const courseParams = decodeURIComponent(searchParams.get("title")) || "Course Details";
   const image = decodeURIComponent(searchParams.get("image")) || "/default-image.jpg";
@@ -32,4 +32,12 @@ const CoursePage = () => {
   );
 };
 
-export default CoursePage;
+const ProjectContentPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProjectContentPageComponent />
+    </Suspense>
+  );
+};
+
+export default ProjectContentPage;

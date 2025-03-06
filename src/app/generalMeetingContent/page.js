@@ -1,26 +1,39 @@
 "use client";
-
-import React from "react";
+import React, { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import GeneralMeetingTabs from "@/components/generalMeetingTabs";
 import MainLayout from "@/app/mainlayout";
 import ProjectContentImage from "@/components/projectContentImage";
+import GeneralMeetingTabs from "@/components/generalMeetingTabs";
+import OfficerAttendanceReport from "@/components/officerAttendance";
 
-const CoursePage = () => {
+const CoursePageContent = () => {
   const searchParams = useSearchParams();
   const courseParams = decodeURIComponent(searchParams.get("title")) || "Course Details";
   const image = decodeURIComponent(searchParams.get("image")) || "/default-image.jpg";
-  const generalMeetingId = searchParams.get("generalMeetingId");
+  const meetingId = searchParams.get("generalMeetingId");
+
+  const [activeTab, setActiveTab] = useState("generalMeetingContent");
 
   return (
     <MainLayout>
       <div className="bg-gray-900 min-h-screen">
-        <GeneralMeetingTabs/>
+        <GeneralMeetingTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="max-w-5xl mx-auto py-8">
-            <ProjectContentImage courseParams={courseParams} image={image} />
+          <ProjectContentImage courseParams={courseParams} image={image} />
+
+          {activeTab === "generalMeetingOverView" && <EventTimeline projectId={meetingId} />}
+          {activeTab === "generalMeetingAttendance" && <OfficerAttendanceReport generalMeetingId={meetingId} />}
         </div>
       </div>
     </MainLayout>
+  );
+};
+
+const CoursePage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CoursePageContent />
+    </Suspense>
   );
 };
 

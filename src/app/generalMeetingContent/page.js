@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, {useState, Suspense} from "react";
 import { useSearchParams } from "next/navigation";
 import MainLayout from "@/app/mainlayout";
 import ProjectContentImage from "@/components/projectContentImage";
@@ -15,6 +15,7 @@ const CoursePage = () => {
   const [activeTab, setActiveTab] = useState("generalMeetingContent");
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <MainLayout>
       <div className="bg-gray-900 min-h-screen">
         <GeneralMeetingTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -26,7 +27,9 @@ const CoursePage = () => {
         </div>
       </div>
     </MainLayout>
+    </Suspense>
   );
 };
+
 
 export default CoursePage;

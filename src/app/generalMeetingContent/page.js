@@ -1,12 +1,13 @@
 "use client";
-import React, {useState} from "react";
+import React, { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import MainLayout from "@/app/mainlayout";
 import ProjectContentImage from "@/components/projectContentImage";
 import GeneralMeetingTabs from "@/components/generalMeetingTabs";
-import OfficerAttendanceReport from "@/components/officerAttendance"
+import OfficerAttendanceReport from "@/components/officerAttendance";
 
-const CoursePage = () => {
+
+const CoursePageContent = () => {
   const searchParams = useSearchParams();
   const courseParams = decodeURIComponent(searchParams.get("title")) || "Course Details";
   const image = decodeURIComponent(searchParams.get("image")) || "/default-image.jpg";
@@ -26,6 +27,14 @@ const CoursePage = () => {
         </div>
       </div>
     </MainLayout>
+  );
+};
+
+const CoursePage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CoursePageContent />
+    </Suspense>
   );
 };
 

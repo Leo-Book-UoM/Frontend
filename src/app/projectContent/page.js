@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import MainLayout from "@/app/mainlayout";
 import ProjectTabs from "@/components/projectTabs";
 import ProjectContentImage from "@/components/projectContentImage";
@@ -16,6 +16,7 @@ const CoursePage = () => {
   const [activeTab, setActiveTab] = useState("projectContent");
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <MainLayout>
       <div className="bg-gray-900 min-h-screen">
         <ProjectTabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -27,6 +28,7 @@ const CoursePage = () => {
         </div>
       </div>
     </MainLayout>
+    </Suspense>
   );
 };
 

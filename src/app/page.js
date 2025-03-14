@@ -44,7 +44,7 @@ export default function Login() {
     if (valid) {
       setLoading(true)
       try {
-        const response = await api.post('/login', { email, password });
+        const response = await api.post('https://leo-book-backend.vercel.app/api/login', { email, password });
         if (response.status === 200){
              const userResponse = await fetch("https://leo-book-backend.vercel.app/api/authuser", {
               credentials: "include",

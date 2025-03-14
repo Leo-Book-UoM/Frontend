@@ -46,7 +46,7 @@ export default function Login() {
       try {
         const response = await api.post('/login', { email, password });
         if (response.status === 200){
-             const userResponse = await fetch("http://localhost:5000/api/authuser", {
+             const userResponse = await fetch("https://leo-book-backend.vercel.app/api/authuser", {
               credentials: "include",
             });
           
@@ -56,7 +56,7 @@ export default function Login() {
           
                 if (data.roleName === "President") {
                   router.push("/presidentDashboard");
-                } else if (data.roleName === "Scretary") {
+                } else if (data.roleName === "scretary") {
                   router.push("/secretaryDashboard");
                 }else {
                     router.push("/login");

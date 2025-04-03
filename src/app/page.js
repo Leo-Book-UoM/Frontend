@@ -45,12 +45,12 @@ export default function Login() {
       setLoading(true)
       try {
         const response = await api.post(
-          'https://leo-book-backend.vercel.app/api/login',
+          'http://localhost:5000/api/login',
           { email, password },
         {withCredentials: true}
       );
         if (response.status === 200){
-             const userResponse = await fetch("https://leo-book-backend.vercel.app/api/authuser", {
+             const userResponse = await fetch("http://localhost:5000/api/authuser", {
               credentials: "include",
             });
           
@@ -60,13 +60,13 @@ export default function Login() {
           
                 if (data.roleName === "President") {
                   router.push("/presidentDashboard");
-                } else if (data.roleName === "scretary") {
+                } else if (data.roleName === "Scretary") {
                   router.push("/secretaryDashboard");
                 }else {
-                    router.push("/login");
+                    router.push("/");
                 }
             }else{
-              router.push("/login"); //Redirect if not authenticated
+              router.push("/"); 
             }
           }else {
             alert(response.data.message);

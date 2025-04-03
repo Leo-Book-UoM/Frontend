@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Select, MenuItem, Button } from "@mui/material";
 
 const ProjectAttributeHandle = ({ generalMeetingId }) => {
   const [projects, setProjects] = useState([]);
@@ -28,10 +29,38 @@ const ProjectAttributeHandle = ({ generalMeetingId }) => {
       }
       const data = await response.json();
       setAttributes(data);
-      console.log("Fetched Attributes:", data); 
     } catch (error) {
       console.error("Error fetching attributes:", error);
       setAttributes([]);
+    }
+  };
+
+  const confirmAttributeSelection = async (projectId) => {
+    const selected1 = selectedAttributes1[projectId] || null;
+    const selected2 = selectedAttributes2[projectId] || null;
+
+    if (!selected1 && !selected2) {
+      alert("Place select at least one attribute before confirming.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/markAttribute`, {
+        method: "POST",
+        headers: {"Content-Type" : "application/json" },
+        body: JSON.stringify({
+          "projectId": projectId,
+          "attributeIds": [selected1, selected2].filter(Boolean),
+        }),
+      });
+      const responseData = await response.json();
+      if (!response.ok) {
+        throw new Error("Failed to confirm attributes");
+      }
+      alert("Attribute confirmed successfully!");
+    }catch (error) {
+      console.error("Error confirming attributes:", error);
+      alert("Failed to confirm attributes.");
     }
   };
 
@@ -55,67 +84,81 @@ const ProjectAttributeHandle = ({ generalMeetingId }) => {
   }, []);
 
   return (
-    <div className="rounded-2xl shadow-lg p-4">
-      <h2 className="text-blue-700 text-2xl font-semibold mb-4">Monthly Project Summary</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full text-white bg-gray-600 rounded-lg shadow-md">
-          <thead>
-            <tr className="bg-gray-800">
-              <th className="px-6 py-3 text-center">Project</th>
-              <th className="px-6 py-3 text-center">Attribute 1</th>
-              <th className="px-6 py-3 text-center">Attribute 2</th>
-            </tr>
-          </thead>
-          <tbody>
+    <Paper sx={{ padding: 3, borderRadius: 2, boxShadow: 3 }}>
+      <Typography variant="h5" color="primary" gutterBottom>
+        Monthly Project Summary
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">Project</TableCell>
+              <TableCell align="center">Attribute 1</TableCell>
+              <TableCell align="center">Attribute 2</TableCell>
+              <TableCell align="center">Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {projects.length > 0 ? (
               projects.map((project, index) => (
-                <tr key={index} className="border-b border-gray-800">
-                  <td className="px-6 py-3">{project.projectname || "N/A"}</td>
-                  <td className="px-6 py-3">
-                    <select
-                      className="text-white bg-gray-800 p-2 rounded-md border border-gray-800"
+                <TableRow key={index}>
+                  <TableCell align="center">{project.projectname || "N/A"}</TableCell>
+                  <TableCell align="center">
+                    <Select
                       value={selectedAttributes1[project.projectId] || ""}
                       onChange={(e) => handleAttributeChange(project.projectId, e.target.value, true)}
+                      displayEmpty
+                      fullWidth
                     >
-                      <option value="" disabled>
+                      <MenuItem value="" disabled>
                         Select Attribute
-                      </option>
+                      </MenuItem>
                       {attributes.map((attribute, index) => (
-                        <option key={index} value={attribute.attributeName}>
+                        <MenuItem key={index} value={attribute.attributeId}>
                           {attribute.attributeName}
-                        </option>
+                        </MenuItem>
                       ))}
-                    </select>
-                  </td>
-                  <td className="px-6 py-3">
-                    <select
-                      className="text-white bg-gray-800 p-2 rounded-md border border-gray-800"
+                    </Select>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Select
                       value={selectedAttributes2[project.projectId] || ""}
                       onChange={(e) => handleAttributeChange(project.projectId, e.target.value, false)}
+                      displayEmpty
+                      fullWidth
                     >
-                      <option value="" disabled>
+                      <MenuItem value="" disabled>
                         Select Attribute
-                      </option>
+                      </MenuItem>
                       {attributes.map((attribute, index) => (
-                        <option key={index} value={attribute.attributeName}>
+                        <MenuItem key={index} value={attribute.attributeName}>
                           {attribute.attributeName}
-                        </option>
+                        </MenuItem>
                       ))}
-                    </select>
-                  </td>
-                </tr>
+                    </Select>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => confirmAttributeSelection(project.projectId)}
+                    >
+                      Confirm
+                    </Button>
+                  </TableCell>
+                </TableRow>
               ))
             ) : (
-              <tr>
-                <td colSpan="3" className="px-6 py-3 text-center">
+              <TableRow>
+                <TableCell colSpan={3} align="center">
                   No Data Available
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 };
 

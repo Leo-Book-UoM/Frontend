@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Select, MenuItem, Button } from "@mui/material";
+import SettedLastMonthProjectAttributes from './MonthlyProjectAttributeTable';
 
-const ProjectAttributeHandle = ({ generalMeetingId }) => {
+const ProjectAttributeHandle = () => {
   const [projects, setProjects] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [selectedAttributes1, setSelectedAttributes1] = useState({});
   const [selectedAttributes2, setSelectedAttributes2] = useState({});
+  const [viewAssignedAttributes, setViewAssignedAttributes] = useState(false);
 
   const fetchProjectNames = async () => {
     try {
@@ -44,6 +46,12 @@ const ProjectAttributeHandle = ({ generalMeetingId }) => {
       return;
     }
 
+    const payload = {
+      projectId: projectId,
+      attributeIds: [selected1, selected2].filter(Boolean)
+    };
+    console.log("Sending payload:", payload);
+
     try {
       const response = await fetch(`http://localhost:5000/api/markAttribute`, {
         method: "POST",
@@ -58,6 +66,7 @@ const ProjectAttributeHandle = ({ generalMeetingId }) => {
         throw new Error("Failed to confirm attributes");
       }
       alert("Attribute confirmed successfully!");
+      setProjects(prevProjects => prevProjects.filter(project => project.projectId !== projectId));
     }catch (error) {
       console.error("Error confirming attributes:", error);
       alert("Failed to confirm attributes.");
@@ -78,10 +87,14 @@ const ProjectAttributeHandle = ({ generalMeetingId }) => {
     }
   };
 
+  const handleViewAssignedAttributesClick = () => {
+    setViewAssignedAttributes((prev) => !prev);
+  }
+
   useEffect(() => {
     fetchProjectNames();
     fetchProjectAttributes();
-  }, []);
+  }, [fetchProjectNames]);
 
   return (
     <Paper sx={{ padding: 3, borderRadius: 2, boxShadow: 3 }}>
@@ -131,7 +144,7 @@ const ProjectAttributeHandle = ({ generalMeetingId }) => {
                         Select Attribute
                       </MenuItem>
                       {attributes.map((attribute, index) => (
-                        <MenuItem key={index} value={attribute.attributeName}>
+                        <MenuItem key={index} value={attribute.attributeId}>
                           {attribute.attributeName}
                         </MenuItem>
                       ))}
@@ -141,7 +154,7 @@ const ProjectAttributeHandle = ({ generalMeetingId }) => {
                     <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => confirmAttributeSelection(project.projectId)}
+                    onClick={() => {confirmAttributeSelection(project.projectId) ; setViewAssignedAttributes(false)}}
                     >
                       Confirm
                     </Button>
@@ -158,7 +171,17 @@ const ProjectAttributeHandle = ({ generalMeetingId }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      
+      <Button
+      variant="outlined"
+      color="secondary"
+      onClick={handleViewAssignedAttributesClick}
+      sx={{ marginTop: 2 }}>
+        {viewAssignedAttributes ? "Hide Assigned Attributes" : "View Assigned Attributes" }
+        </Button>
+        {viewAssignedAttributes && <SettedLastMonthProjectAttributes fetchProjectNames={fetchProjectNames} viewAssignedAttributes={viewAssignedAttributes} />}
     </Paper>
+    
   );
 };
 

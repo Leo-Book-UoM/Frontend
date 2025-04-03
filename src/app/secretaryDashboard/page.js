@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import SecretaryLayout from "@/app/secrataryLayout";
 import AuthWrapper from "@/components/authWrapper";
 import DisplayUserName from "@/components/displayUserName";
-import SecretaryProjectStatusCard from "@/components/secretaryProjectReportingStatusCard";
-import PresidentProjectAttributeCard from "@/components/presidentProjectAttributeCard";
-import PresidentMonthlyProjectCard from "@/components/presidentMonthlyProjectCard";
-import SecretaryMeetingParticipentsCard from "@/components/secretaryMeetingStatusCard";
+import SecretaryProjectStatusCard from "@/components/secretaryComponents/secretaryProjectReportingStatusCard";
+import PresidentProjectAttributeCard from "@/components/presidentComponents/presidentProjectAttributeCard";
+import PresidentMonthlyProjectCard from "@/components/presidentComponents/presidentMonthlyProjectCard";
+import SecretaryMeetingParticipentsCard from "@/components/secretaryComponents/secretaryMeetingStatusCard";
 
 function Page() {
   const [projectReportStatus, setProjectReportStatus] = useState({

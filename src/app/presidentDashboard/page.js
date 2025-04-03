@@ -2,9 +2,9 @@
 import Layout from "../presidentlayout";
 import AuthWrapper from "../../components/authWrapper";
 import PresidentCard from "../../components/presidentProjectTaskCard";
-import PresidentMonthlyProjectCard from "@/components/presidentMonthlyProjectCard";
-import PresidentProjectAttributeCard from "@/components/presidentProjectAttributeCard";
-import PresidentTreasureDetailesCard from "@/components/presidentTreasureDetailesCard";
+import PresidentMonthlyProjectCard from "@/components/presidentComponents/presidentMonthlyProjectCard";
+import PresidentProjectAttributeCard from "@/components/presidentComponents/presidentProjectAttributeCard";
+import PresidentTreasureDetailesCard from "@/components/presidentComponents/presidentTreasureDetailesCard";
 import DisplayUserName from "@/components/displayUserName";
 import { useState, useEffect } from "react";
 

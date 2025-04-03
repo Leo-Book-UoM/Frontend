@@ -21,11 +21,11 @@ const AuthWrapper = ({ children }) => {
           setUserName(data.userName);
           setUserRole(data.roleName);
         } else {
-          router.push("/login"); 
+          router.push("/"); 
         }
       } catch (error) {
         console.error("Error:", error);
-        router.push("/login");
+        router.push("/");
       } finally {
         setLoading(false);
       }

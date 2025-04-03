@@ -82,6 +82,7 @@ function Page() {
       if (!response.ok) {
         throw new Error("Failed to fetch Monthly GM participants");
       }
+      console.log()
   
       const data = await response.json();
       

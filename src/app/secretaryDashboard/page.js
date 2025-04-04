@@ -7,6 +7,7 @@ import SecretaryProjectStatusCard from "@/components/secretaryComponents/secreta
 import PresidentProjectAttributeCard from "@/components/presidentComponents/presidentProjectAttributeCard";
 import PresidentMonthlyProjectCard from "@/components/presidentComponents/presidentMonthlyProjectCard";
 import SecretaryMeetingParticipentsCard from "@/components/secretaryComponents/secretaryMeetingStatusCard";
+import DistrictEventCard from "@/components/secretaryComponents/districtEventCard";
 
 function Page() {
   const [projectReportStatus, setProjectReportStatus] = useState({
@@ -21,6 +22,7 @@ function Page() {
   const [upcommingProjects, setUpcommingProjects] = useState(0);
   const [gmParticipents, setGMParticipents] = useState({month_name:'', participant_count: null});
   const [lastMonthGMParticipents, setLastMonthGMParticipents] = useState({month_name:'', participant_count: null});
+  const [distirctEventDetailes, setDistrictEventDetailes ] = useState({ EventCount: "0" });
 
   const fetchProjectReportingStatus = async () => {
     try {
@@ -97,12 +99,26 @@ function Page() {
     }
   };
 
+  const fetchDestrictEventDetailes = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/getMonthDistrictEvent`);
+      if (!response.ok) throw new Error("Failed to fetch project reported status");
+
+      const data = await response.json();
+      setDistrictEventDetailes(data);
+    } catch (error) {
+      console.error("Error fetching project reported status:", error);
+      setDistrictEventDetailes({});
+    }
+  };
+
   useEffect(() => {
     fetchProjectReportingStatus();
     fetchProjectAttributeCounts();
     fetchMonthlyProjectCount();
     fetchUpcommingProjectCount();
     fetchMonthlyGMParticipents();
+    fetchDestrictEventDetailes();
   }, []);
 
   useEffect(() => {
@@ -150,6 +166,14 @@ function Page() {
                   count={lastMonthGMParticipents.participant_count}
                   month={lastMonthGMParticipents.month_name}
                   data={gmParticipents}
+                />
+              )}
+              {distirctEventDetailes && (
+                <DistrictEventCard
+                  title="District Events"
+                  totalCount={distirctEventDetailes.eventCount}
+                  dates={distirctEventDetailes.dates}
+                  doneEventCount={distirctEventDetailes.doneEventCount}
                 />
               )}
             </div>

@@ -94,7 +94,7 @@ const ProjectAttributeHandle = () => {
   useEffect(() => {
     fetchProjectNames();
     fetchProjectAttributes();
-  }, [fetchProjectNames]);
+  }, []);
 
   return (
     <Paper sx={{ padding: 3, borderRadius: 2, boxShadow: 3 }}>
@@ -179,7 +179,7 @@ const ProjectAttributeHandle = () => {
       sx={{ marginTop: 2 }}>
         {viewAssignedAttributes ? "Hide Assigned Attributes" : "View Assigned Attributes" }
         </Button>
-        {viewAssignedAttributes && <SettedLastMonthProjectAttributes fetchProjectNames={fetchProjectNames} viewAssignedAttributes={viewAssignedAttributes} />}
+        {viewAssignedAttributes && <SettedLastMonthProjectAttributes fetchProjectNames={fetchProjectNames()} viewAssignedAttributes={viewAssignedAttributes} />}
     </Paper>
     
   );

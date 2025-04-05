@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import SecretaryLayout from "@/app/secrataryLayout";
+import SecretaryLayout from "@/components/layout/secrataryLayout";
 import AuthWrapper from "@/components/authWrapper";
 import DisplayUserName from "@/components/displayUserName";
 import SecretaryProjectStatusCard from "@/components/secretaryComponents/secretaryProjectReportingStatusCard";

@@ -1,5 +1,5 @@
 import React from "react";
-import SecretarySideBar from "../components/secretaryComponents/secretarySideBar";
+import SecretarySideBar from "../secretaryComponents/secretarySideBar";
 import { useState } from "react";
 
 const MainLayout = ({ children }) => {

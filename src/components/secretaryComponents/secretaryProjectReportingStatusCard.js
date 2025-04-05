@@ -55,7 +55,7 @@ const SecretaryProjectStatusCard = ({
         <div>
           <p className="text-sm uppercase text-gray-300 ">Total Projects to report</p>
           <h2 className="text-white font-bold text-2xl">{totalProjectCount}</h2>
-          <p className="text-sm text-gray-300 mt-2">
+          <div className="text-sm text-gray-300 mt-2">
       <span style={{color: "#80EF80"}}className="">Submitted Reports</span>
         <span style={{ fontSize: "18px", color: "#80EF80", fontWeight:"bold" }}className={`flex items-center `}>
           <span className="pt-6" /> {submittedProjectsCount}
@@ -68,7 +68,7 @@ const SecretaryProjectStatusCard = ({
         <span style={{ fontSize: "18px",color: "#FF6384", fontWeight:"bold" }}className={`flex items-center  `}>
           <span className="pt-6" /> {notReportedToClubSecretary}
         </span>
-      </p>
+      </div>
         </div>
         <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[80px]  sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[120px] lg:h-[120px] ">
           <h2  className="text-base  text-gray-300 mb-2">Reports Distribution</h2>

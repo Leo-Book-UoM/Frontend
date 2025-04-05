@@ -52,18 +52,18 @@ const PresidentProjectAttributeCard = ({
         <div>
           <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>
           <h2 className="text-white font-bold text-2xl">{totalAttributeCount}</h2>
-          <p style={{ color: "#4BC0C0" }}className="text-sm mt-2">
+          <div style={{ color: "#4BC0C0" }}className="text-sm mt-2">
       <span className="">Done Attributes </span>
         <span style={{ fontSize: "18px", color: "#4BC0C0" }}className={`flex items-center`}>
           <span className="pt-6" /> {doneAttributeCount}
         </span>
-        </p>
-        <p style={{color: "#FFCD56"}}className="text-sm mt-2">
+        </div>
+        <div style={{color: "#FFCD56"}}className="text-sm mt-2">
         <span className="">Todo Attributes </span>
         <span style={{ fontSize: "18px", color: "#FFCD56"}}className={`flex items-center`}>
           <span className="pt-6" /> {todoAttributeCount}
         </span>
-      </p>
+      </div>
         </div>
         <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[80px]  sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[120px] lg:h-[120px] ">
           <h2 className="text-base  text-gray-300 mb-2">Attributes Distribution</h2>

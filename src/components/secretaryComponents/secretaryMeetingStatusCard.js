@@ -71,15 +71,15 @@ const SecretaryMeetingParticipentsCard = ({
       role="button"
       tabIndex={0}
     >
-      <div className="flex justify-between sm:flex-col md:flex-row">
+      <div className=" justify-between sm:flex-col md:flex-row">
         <div>
           <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>
-          <h2 className="text-white font-bold text-2xl lg:mb-3">{count}</h2>
-          <p className="text-sm text-gray-300 mt-5">
-          </p>
+          <h2 className="text-white font-bold text-2xl lg:mb-0">{count}</h2>
+          <div className="text-sm text-gray-300 mt-0">
+          </div>
         </div>
-        <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[300px] sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[350px] lg:h-[110px] ">
-          <h2 className="text-base text-gray-300 mb-2 lg:ml-12 sm:ml-6">General Meeting Attendance Distribution</h2>
+        <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[300px] sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[350px] lg:h-[140px] ">
+          <h2 className="text-base text-gray-300 mb-2 ">General Meeting Attendance Distribution</h2>
           <Bar data={chartData} options={options} />
         </div>
       </div>

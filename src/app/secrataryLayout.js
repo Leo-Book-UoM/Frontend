@@ -1,5 +1,5 @@
 import React from "react";
-import PresidentSidebar from "../components/presidentComponents/presidentSideBar";
+import SecretarySideBar from "../components/secretaryComponents/secretarySideBar";
 import { useState } from "react";
 
 const MainLayout = ({ children }) => {
@@ -7,7 +7,7 @@ const MainLayout = ({ children }) => {
 
   return(
     <div className="flex h-screen">
-      <PresidentSidebar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
+      <SecretarySideBar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
 
       <div className={`flex flex-col flex-1 transition-all  duration-700  bg-gray-900 ${
         isSidebarOpen ? 'ml-64' : "ml-20"} flex-1`}>

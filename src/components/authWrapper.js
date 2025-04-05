@@ -6,6 +6,8 @@ const AuthWrapper = ({ children }) => {
   const [userName, setUserName] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [userImage, setUserImage] = useState(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -20,6 +22,7 @@ const AuthWrapper = ({ children }) => {
           const data = await response.json();
           setUserName(data.userName);
           setUserRole(data.roleName);
+          setUserId(data.userId);
         } else {
           router.push("/"); 
         }
@@ -50,7 +53,7 @@ const AuthWrapper = ({ children }) => {
 
   return (
     <div>
-      {children && typeof children === "function" ? children(userName) : children}
+      {children && typeof children === "function" ? children(userName , userRole , userId, userImage) : children}
     </div>
   );
 };

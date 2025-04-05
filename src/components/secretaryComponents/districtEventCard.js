@@ -30,7 +30,7 @@ doneEventCount = 0,
         <div>
           <p className="text-sm uppercase text-gray-300 ">Total Event Count</p>
           <h2 className="text-white font-bold text-2xl">{totalCount}</h2>
-          <p className="text-sm text-gray-300 mt-2">
+          <div className="text-sm text-gray-300 mt-2">
       <span style={{color: "#80EF80"}}className="">Done Events</span>
         <span style={{ fontSize: "18px", color: "#80EF80", fontWeight:"bold" }}className={`flex items-center `}>
           <span className="pt-6" /> {doneEventCount}
@@ -40,7 +40,7 @@ doneEventCount = 0,
         <span style={{ fontSize: "18px" ,color: "#FFCD56", fontWeight:"bold"}}className={`flex items-center  `}>
           <span className="pt-6" /> {toDoEventCount}
         </span>
-      </p>
+      </div>
         </div>
         <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[80px]  sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[320px] lg:h-[200px] ">
           <h2  className="text-base  text-gray-300 mb-2">District Event Distribution</h2>

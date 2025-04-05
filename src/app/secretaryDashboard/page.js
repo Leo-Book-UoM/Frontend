@@ -8,6 +8,7 @@ import PresidentProjectAttributeCard from "@/components/presidentComponents/pres
 import PresidentMonthlyProjectCard from "@/components/presidentComponents/presidentMonthlyProjectCard";
 import SecretaryMeetingParticipentsCard from "@/components/secretaryComponents/secretaryMeetingStatusCard";
 import DistrictEventCard from "@/components/secretaryComponents/districtEventCard";
+import MembershipCard from "@/components/secretaryComponents/membershipcard";
 
 function Page() {
   const [projectReportStatus, setProjectReportStatus] = useState({
@@ -23,6 +24,10 @@ function Page() {
   const [gmParticipents, setGMParticipents] = useState({month_name:'', participant_count: null});
   const [lastMonthGMParticipents, setLastMonthGMParticipents] = useState({month_name:'', participant_count: null});
   const [distirctEventDetailes, setDistrictEventDetailes ] = useState({ EventCount: "0" });
+  const [membershipDetailes, setMembershipDetailes] = useState({Membership: 0,
+    boardMemberCount: 0,
+    formerBordMembesCount: 0,
+    newLeosCount: 0, });
 
   const fetchProjectReportingStatus = async () => {
     try {
@@ -102,13 +107,26 @@ function Page() {
   const fetchDestrictEventDetailes = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/getMonthDistrictEvent`);
-      if (!response.ok) throw new Error("Failed to fetch project reported status");
+      if (!response.ok) throw new Error("Failed to fetch Evend detailes");
 
       const data = await response.json();
       setDistrictEventDetailes(data);
     } catch (error) {
-      console.error("Error fetching project reported status:", error);
+      console.error("Error fetching project Evend detailes:", error);
       setDistrictEventDetailes({});
+    }
+  };
+
+  const fetchMembershipDetailes = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/getMembershipCounts`);
+      if (!response.ok) throw new Error("Failed to fetch membership detailes");
+
+      const data = await response.json();
+      setMembershipDetailes(data);
+    } catch (error) {
+      console.error("Error fetching membership detailes", error);
+      setMembershipDetailes({});
     }
   };
 
@@ -119,6 +137,7 @@ function Page() {
     fetchUpcommingProjectCount();
     fetchMonthlyGMParticipents();
     fetchDestrictEventDetailes();
+    fetchMembershipDetailes();
   }, []);
 
   useEffect(() => {
@@ -174,6 +193,15 @@ function Page() {
                   totalCount={distirctEventDetailes.eventCount}
                   dates={distirctEventDetailes.dates}
                   doneEventCount={distirctEventDetailes.doneEventCount}
+                />
+              )}
+              {membershipDetailes && (
+                <MembershipCard
+                  title="Club Membership"
+                  totalMembership={membershipDetailes.membership}
+                  boardMemberCount={membershipDetailes.boardMemberCount}
+                  formerBordMembesCount={membershipDetailes.otherMemberCount}
+                  newLeosCount={membershipDetailes.newLeosCount}
                 />
               )}
             </div>

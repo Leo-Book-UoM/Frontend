@@ -75,8 +75,8 @@ const SecretaryMeetingParticipentsCard = ({
         <div>
           <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>
           <h2 className="text-white font-bold text-2xl lg:mb-0">{count}</h2>
-          <p className="text-sm text-gray-300 mt-0">
-          </p>
+          <div className="text-sm text-gray-300 mt-0">
+          </div>
         </div>
         <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[300px] sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[350px] lg:h-[140px] ">
           <h2 className="text-base text-gray-300 mb-2 ">General Meeting Attendance Distribution</h2>

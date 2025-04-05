@@ -77,12 +77,12 @@ const doneProjectPresentage = count > 0 ? (doneProjectCount/count)*100 : 0;
         <div>
           <p className="text-sm uppercase text-gray-300 mb-1">{title}</p>
           <h2 className="text-white font-bold text-2xl lg:mb-3">{count}</h2>
-          <p className="text-sm text-gray-300 mt-5">
+          <div className="text-sm text-gray-300 mt-5">
       <span className="">Upcoming Projects</span>
       <span style= {{ fontSize: "18px" }}  className={`flex items-center ${percentageColorClass}`}>
           <span className="pt-6" /> {upcommingProjectsCount}
         </span>
-      </p>
+      </div>
         </div>
         <div className="col-span-1 xs:h-[20] xs:w-[20] sm:w-[300px]  sm:h-[80px] sd:w-[100px] sd:h-[100px] lg:w-[350px] lg:h-[110px] ">
           <h2 className="text-base  text-gray-300 mb-2 lg:ml-12 sm:ml-6">Project Distribution</h2>

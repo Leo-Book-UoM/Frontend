@@ -1,5 +1,5 @@
 "use client";
-import Layout from "../presidentlayout";
+import Layout from "../../components/layout/secrataryLayout";
 import AuthWrapper from "../../components/authWrapper";
 import PresidentCard from "../../components/presidentProjectTaskCard";
 import PresidentMonthlyProjectCard from "@/components/presidentComponents/presidentMonthlyProjectCard";

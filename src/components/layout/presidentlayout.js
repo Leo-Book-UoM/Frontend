@@ -1,5 +1,5 @@
 import React from "react";
-import PresidentSidebar from "../components/presidentComponents/presidentSideBar";
+import PresidentSidebar from "../presidentComponents/presidentSideBar";
 import { useState } from "react";
 
 const MainLayout = ({ children }) => {

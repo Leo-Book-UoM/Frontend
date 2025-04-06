@@ -64,7 +64,7 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
 
   return (
     <AuthWrapper>
-      {(userName, userRole, userId, userImage) => {
+      {(userName, userRole,  userImage) => {
         const navItems = [
           { icon: BsFillBoxFill, label: "Dashboard", href: `/${userRole?.toLowerCase()}Dashboard` },
           { icon: FaFolderOpen, label: "Project Reports", href: `/${userRole?.toLowerCase()}/profile` },
@@ -113,7 +113,7 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
                     >
                       <h2 className="text-lg font-semibold text-blue-500">{userName}</h2>
                       <p className="text-sm text-blue-500">{userRole}</p>
-                      <a href = {`/profile/${userRole?.toLowerCase()}`} className="text-xs hover:underline">
+                      <a href="/profile" className="text-xs hover:underline">
                         View profile
                       </a>
                     </div>

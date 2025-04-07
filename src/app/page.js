@@ -60,7 +60,7 @@ export default function Login() {
           
                 if (data.roleName === "President") {
                   router.push("/presidentDashboard");
-                } else if (data.roleName === "Scretary") {
+                } else if (data.roleName === "Secretary") {
                   router.push("/secretaryDashboard");
                 }else {
                     router.push("/");

@@ -1,5 +1,5 @@
 "use client"
-import SecretaryLayout from "@/app/secrataryLayout";
+import SecretaryLayout from "@/components/layout/secrataryLayout";
 import AuthWrapper from "@/components/authWrapper";
 import React, { useEffect, useState } from "react";
 import ProjectCard from "../../components/projectCard";

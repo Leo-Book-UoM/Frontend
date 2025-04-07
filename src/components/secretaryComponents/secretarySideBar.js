@@ -41,7 +41,7 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
 
   const renderNavItem = useCallback(
     (Icon, label, href) => {
-      const isActive = pathname === href;
+      const isActive = pathname.startsWith(href);
       return (
         <li key={label} className={`hover:text-blue-500 ${isActive ? "bg-blue-700 text-white rounded-md" : ""}`}>
           <Link href={href} className="flex items-center p-2 space-x-3 rounded-md">
@@ -67,12 +67,12 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
       {(userName, userRole,  userImage) => {
         const navItems = [
           { icon: BsFillBoxFill, label: "Dashboard", href: `/${userRole?.toLowerCase()}Dashboard` },
-          { icon: FaFolderOpen, label: "Project Reports", href: `/${userRole?.toLowerCase()}/profile` },
-          { icon: MdCoPresent, label: "Project Proposels", href: "/modules/project/createProject" },
+          { icon: FaFolderOpen, label: "Project Reports", href: `/projectReports` },
+          { icon: MdCoPresent, label: "Project Proposals", href: "/projectProposals" },
           { icon: LuBookMarked, label: "Flyers & PR", href: "/forum" },
-          { icon: FaHandsHelping, label: "Requests", href: "/leo-family" },
-          { icon: IoPersonAdd, label: "Add Member", href: "/leo-family" },
-          { icon: FaLightbulb, label: "Project Ideas", href: "/leo-family" },
+          { icon: FaHandsHelping, label: "Requests", href: "/requests" },
+          { icon: IoPersonAdd, label: "Add Member", href: "/add-member" },
+          { icon: FaLightbulb, label: "Project Ideas", href: "/project-ideas" },
           { icon: GiFamilyTree, label: "Leo Family", href: "/leo-family" },
         ];
 

@@ -5,6 +5,7 @@ import ProjectTabs from "@/components/projectTabs";
 import ProjectContentImage from "@/components/projectContentImage";
 import EventTimeline from "@/components/timeline";
 import ProjectBudgetReport from "@/components/projectBudgetReport";
+import ProjectReporting from "@/components/projectReporing";
 import { useSearchParams } from "next/navigation";
 
 const ProjectContentPageComponent = () => {
@@ -17,17 +18,18 @@ const ProjectContentPageComponent = () => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-    <MainLayout>
-      <div className="bg-gray-900 min-h-screen">
-        <ProjectTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div className="max-w-5xl mx-auto py-8">
-          <ProjectContentImage courseParams={courseParams} image={image} />
+      <MainLayout>
+        <div className="bg-gray-900 min-h-screen">
+          <ProjectTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div className="max-w-5xl mx-auto py-8">
+            <ProjectContentImage courseParams={courseParams} image={image} />
 
-          {activeTab === "projectContent" && <EventTimeline projectId={projectId} />}
-          {activeTab === "projectTreasure" && <ProjectBudgetReport projectId={projectId} />}
+            {activeTab === "projectContent" && <EventTimeline projectId={projectId} />}
+            {activeTab === "projectDocuments" && <ProjectReporting projectId={projectId} />} {/* Corrected */}
+            {activeTab === "projectTreasure" && <ProjectBudgetReport projectId={projectId} />}
+          </div>
         </div>
-      </div>
-    </MainLayout>
+      </MainLayout>
     </Suspense>
   );
 };

@@ -2,17 +2,16 @@
 import React, { useEffect, useState } from "react";
 import SecretaryLayout from "@/components/layout/secrataryLayout";
 import AuthWrapper from "@/components/authWrapper";
-import ProjectAttributeHandle from "@/components/projectAttributeComponents/setProjectAttribute";
-import projectTabs from "@/components/projectTabs";
-import ProjectTabs from "@/components/projectAttributeComponents/attributeTabs";
+import ClubMembers from '@/components/clubMembershipComponents/membersTable';
+import MembershipTabs from "@/components/clubMembershipComponents/membershipTabs";
 
 
 function Page() {
 const [activeTab, setActiveTab] = useState("projectContent");
   return (
         <SecretaryLayout>
-<ProjectTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-<ProjectAttributeHandle/>
+<MembershipTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+<ClubMembers />
         </SecretaryLayout>
   );
 }

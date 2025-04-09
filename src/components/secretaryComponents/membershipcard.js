@@ -42,7 +42,7 @@ const SecretaryProjectStatusCard = ({
   cutout: "60%"
   };
   const handleCardClick = () => {
-    router.push(`/secretaryReportingProjects`);
+    router.push(`/clubMembership`);
   };
 
   return (

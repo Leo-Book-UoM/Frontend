@@ -47,7 +47,7 @@ const useAuth = () => {
       },
       Secretary: {
         default: "/secretaryDashboard",
-        allowedPaths: ["/profile", "/secretaryDashboard", "/projectAttribute", "/projectReports"],
+        allowedPaths: ["/profile", "/secretaryDashboard", "/projectAttribute", "/projectReports", "/clubMembership"],
       },
     };
 

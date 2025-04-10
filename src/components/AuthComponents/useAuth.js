@@ -38,8 +38,8 @@ const useAuth = () => {
   }, [router]);
 
   useEffect(() => {
-    if (!userRole) return;
-
+    if (!userRole || loading) return;
+  
     const roleRoutes = {
       President: {
         default: "/presidentDashboard",
@@ -49,14 +49,29 @@ const useAuth = () => {
         default: "/secretaryDashboard",
         allowedPaths: ["/profile", "/secretaryDashboard", "/projectAttribute", "/projectReports", "/clubMembership"],
       },
+      Treasure: {
+        default: "/treasureDashboard",
+        allowedPaths: ["/profile", "/treasureDashboard", "/projectAttribute", "/projectReports", "/clubMembership"],
+      },
+      Director: {
+        default: "/directorDashboard",
+        allowedPaths: ["/profile", "/directorDashboard","/projectContent"],
+      }
     };
-
+  
     const roleConfig = roleRoutes[userRole];
-
-    if (roleConfig && !roleConfig.allowedPaths.some((path) => pathname.startsWith(path))) {
-      router.push(roleConfig.default);
+  
+    // Check if user is on an unauthorized path
+    const isAllowed = roleConfig.allowedPaths.some((path) => pathname.startsWith(path));
+  
+    if (!isAllowed) {
+  
+      if (pathname !== roleConfig.default) {
+        router.push(roleConfig.default);
+      }
     }
-  }, [userRole, pathname, router]);
+  }, [userRole, loading, pathname, router]);
+  
 
   return {
     userName,

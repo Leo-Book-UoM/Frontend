@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaTimes } from 'react-icons/fa';
+import Select from 'react-select';
 
-const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
+const CreateProjectForm = ({ setIsFormVisible, onProjectAdded }) => {
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState('');
+  const [userOptions, setUserOptions] = useState([]);
+  const [directorOptions, setDirectorOptions] = useState([]);
+  const [director, setDirector] = useState(null);
+  const [chairman, setChairman] = useState(null);
+  const [secretary, setSecretary] = useState(null);
+  const [treasurer, setTreasurer] = useState(null);
+
   const [newEvent, setNewEvent] = useState({
     title: "",
     date: "",
     time: "",
     location: "",
     description: "",
+    director : "",
     chairman: "",
     secretary: "",
-    treasure: "",
+    treasurer: "",
     image: "",
     category: null,
     status: 1,
   });
-  const [prospectName, setProspectName] = useState([]);
 
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -31,17 +39,62 @@ const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
     accept: 'image/*',
     multiple: false,
   });
-  
+
+  const getProspectNames = async () => {
+    fetch("http://localhost:5000/api/getAllUsers")
+      .then((res) => res.json())
+      .then((data) => {
+        const options = data.map((user) => ({
+          value: user.userId,
+          label: user.userName,
+        }));
+        setUserOptions(options);
+      })
+      .catch((error) => {
+        console.error("Error fetching user names:", error);
+      });
+  };
+
+  const getDirectorPositions = async () => {
+    fetch("http://localhost:5000/api/getDerectorPositions")
+      .then((res) => res.json())
+      .then((data) => {
+        const options = data.map((designation) => ({
+          value: designation.officerId,
+          label: designation.designationName,
+          
+        }));
+        //console.log("d:",director.value);
+        setDirectorOptions(options);
+      })
+      .catch((error) => {
+        console.error("Error fetching user names:", error);
+      });
+  };
+
+  useEffect(() => {
+    getProspectNames();
+    getDirectorPositions();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!newEvent.title.trim()) {
       alert("Project Name is required");
       return;
     }
-  
-    let formattedTime = newEvent.time ? `${newEvent.time}:00` : null;
-  
+
+    const formattedTime = newEvent.time ? `${newEvent.time}:00` : null;
+
     const formData = new FormData();
     formData.append("title", newEvent.title);
     if (newEvent.date) formData.append("date", newEvent.date);
@@ -49,29 +102,30 @@ const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
     if (newEvent.location) formData.append("location", newEvent.location);
     if (newEvent.category) formData.append("category", newEvent.category);
     if (newEvent.status !== undefined) formData.append("status", newEvent.status);
-    if (newEvent.chairman) formData.append("chairman", newEvent.chairman);
-    if (newEvent.secretary) formData.append("secretary", newEvent.secretary);
-    if (newEvent.treasurer) formData.append("treasurer", newEvent.treasurer);
+    if (director) formData.append("director", director.value);
+    if (chairman) formData.append("chairman", chairman.value);
+    if (secretary) formData.append("secretary", secretary.value);
+    if (treasurer) formData.append("treasurer", treasurer.value);
     if (imageFile) formData.append("image", imageFile);
+console.log(director.value)
     try {
       const response = await fetch("http://localhost:5000/api/addproject", {
         method: "POST",
         body: formData,
       });
-  
-      if (!response.ok) {
-        throw new Error("Failed to create project");
-      }
+      if (!response.ok) throw new Error("Failed to create project");
+
       const newProject = await response.json();
       onProjectAdded(newProject);
-  
       setIsFormVisible(false);
+
       setNewEvent({
         title: "",
         date: "",
         time: "",
         location: "",
         description: "",
+        director: "",
         chairman: "",
         secretary: "",
         treasurer: "",
@@ -79,40 +133,15 @@ const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
         category: null,
         status: 1,
       });
-  
+      setDirector(null);
+      setChairman(null);
+      setSecretary(null);
+      setTreasurer(null);
       setImageFile(null);
       setPreview("");
     } catch (error) {
       console.error("Error creating project:", error);
     }
-  };
-  
-  const getProspectNames = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/getUserNames/Prospect`);
-
-      // Check if response is OK
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const data = await response.json();
-      setProspectName(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error("Error fetching prospect names:", error);
-      setProspectName([]); 
-    }
-  };
-
-  useEffect(() => {
-    getProspectNames();
-  }, []); 
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewEvent((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
   };
 
   return (
@@ -120,11 +149,7 @@ const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
       <div className="bg-white rounded-lg p-6 w-[600px] shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-800">Add New Project</h2>
-          <button
-            onClick={() => setIsFormVisible(false)}
-            className="text-gray-500 hover:text-red-500"
-            title="Close"
-          >
+          <button onClick={() => setIsFormVisible(false)} className="text-gray-500 hover:text-red-500">
             <FaTimes size={20} />
           </button>
         </div>
@@ -187,53 +212,46 @@ const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
                 )}
               </div>
             </div>
+
+            <div>
+              <label className="font-bold">Director</label>
+              <Select
+                options={directorOptions}
+                value={director}
+                onChange={setDirector}
+                placeholder="Select Director Position"
+                isSearchable
+              />
+            </div>
             <div>
               <label className="font-bold">Project Chairman</label>
-              <select
-                name="chairman"
-                value={newEvent.chairman}
-                onChange={handleInputChange}
-                className="border rounded p-2 w-full"
-              >
-                <option value="" disabled>Select Project Chairman</option>
-                {prospectName.map((prospect, index) => (
-                  <option key={index} value={prospect.userName}>
-                    {prospect.userName}
-                  </option>
-                ))}
-              </select>
+              <Select
+                options={userOptions}
+                value={chairman}
+                onChange={setChairman}
+                placeholder="Select Chairman"
+                isSearchable
+              />
             </div>
             <div>
               <label className="font-bold">Project Secretary</label>
-              <select
-                name="secretary" 
-                value={newEvent.secretary}
-                onChange={handleInputChange}
-                className="border rounded p-2 w-full"
-              >
-                <option value="" disabled>Select Project Secretary</option>
-                {prospectName.map((prospect, index) => (
-                  <option key={index} value={prospect.userName}>
-                    {prospect.userName}
-                  </option>
-                ))}
-              </select>
+              <Select
+                options={userOptions}
+                value={secretary}
+                onChange={setSecretary}
+                placeholder="Select Secretary"
+                isSearchable
+              />
             </div>
             <div>
               <label className="font-bold">Project Treasurer</label>
-              <select
-                name="treasure" 
-                value={newEvent.treasure}
-                onChange={handleInputChange}
-                className="border rounded p-2 w-full"
-              >
-                <option value="" disabled>Select Project Treasurer</option>
-                {prospectName.map((prospect, index) => (
-                  <option key={index} value={prospect.userName}>
-                    {prospect.userName}
-                  </option>
-                ))}
-              </select>
+              <Select
+                options={userOptions}
+                value={treasurer}
+                onChange={setTreasurer}
+                placeholder="Select Treasurer"
+                isSearchable
+              />
             </div>
 
             <div className="col-span-2 flex justify-center">
@@ -241,7 +259,7 @@ const CreateProjectForm = ({ setIsFormVisible , onProjectAdded}) => {
                 type="submit"
                 className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600"
               >
-                Add Event
+                Add Project
               </button>
             </div>
           </div>

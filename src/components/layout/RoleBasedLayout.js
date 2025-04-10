@@ -5,7 +5,9 @@ const RoleBasedLayout = ({ userRole, children }) => {
     switch (userRole?.toLowerCase()) {
         case "secretary":
             return <SecrataryLayout>{children}</SecrataryLayout>
-        case "President":
+        case "president":
+            return <PresidentLayout>{children}</PresidentLayout>
+        case "director":
             return <PresidentLayout>{children}</PresidentLayout>
         default:
             return <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white font-sans">

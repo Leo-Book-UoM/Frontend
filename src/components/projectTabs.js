@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 
 const CourseTabs = ({ activeTab, setActiveTab }) => {
   const tabs = useMemo(() => ({
+    projectContent: "Overview",
     projectContent: "Content",
     projectDocuments: "Documents",
     projectTreasure: "Treasure",
@@ -10,7 +11,7 @@ const CourseTabs = ({ activeTab, setActiveTab }) => {
   }), []);
 
   return (
-    <div className="bg-gray-900 text-white px-8 py-5 flex space-x-6 sticky top-0 z-50">
+    <div className="bg-gray-900 text-white px-8 py-2 flex space-x-6 sticky top- -inset-6 z-50">
       {Object.entries(tabs).map(([tab, label]) => (
         <button
           key={tab}

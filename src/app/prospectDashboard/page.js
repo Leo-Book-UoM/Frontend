@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../mainlayout";
 import ProjectCard from "../../components/projectCard";
 import AddItemButton from "../../components/addItemButton";
-import CreateProjectForm from "../../components/projectCreationForm";
+import CreateProjectForm from "../../components/projectComponents/projectCreationForm";
 import { useRouter } from "next/navigation";
 
 

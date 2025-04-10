@@ -62,7 +62,12 @@ export default function Login() {
                   router.push("/presidentDashboard");
                 } else if (data.roleName === "Secretary") {
                   router.push("/secretaryDashboard");
-                }else {
+                } else if (data.roleName === "Treasure") {
+                  router.push("/treasureDashboard");
+                } else if (data.roleName === "Director") {
+                  router.push("/directorDashboard");
+                }
+                else {
                     router.push("/");
                 }
             }else{

@@ -6,8 +6,9 @@ import { useState, useEffect } from "react";
 import RoleBasedLayout from "../layout/RoleBasedLayout";
 import ProfileTabs from "./profileTabs";
 import ProfileDetails from "./profileDetails";
-// import ProjectReporting from "./ProjectReporting";
-// import ProjectBudgetReport from "./ProjectBudgetReport";
+import GMAttendance from "./gmAttendance";
+import ProjectAttendance from "./projectAttendance";
+import ProfileEditForm from "./profileEditForm";
 
 export default function ProfilePage() {
   const [userName, setUserName] = useState("");
@@ -50,6 +51,34 @@ export default function ProfilePage() {
     setIsEditing(true);
   };
 
+  const handleSaveChanges = () => {
+    setIsEditing(false);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/updateProPic/${userId}`, {
+        method: "PATCH",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setUserImage(data.imageUrl);
+        setUserDetails((prev) => ({...prev, image: data.imageUrl }));
+      } else {
+        console.error("Failed to upload image");
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+    }
+  }
   return (
     <AuthWrapper>
       {(userNameFromAuth, userRoleFromAuth, userIdFromAuth) => {
@@ -68,11 +97,17 @@ export default function ProfilePage() {
             <div className="min-h-screen bg-gray-900 text-white font-sans">
               <div className="max-w-4xl mx-auto p-8">
                 <div className="flex items-start space-x-6">
-                  <Avatar
-                    alt={userDetails.userName || userName}
-                    src={userDetails.image || userImage || "https://avatars.githubusercontent.com/u/583231?v=4"}
-                    sx={{ width: 160, height: 160 }}
-                  />
+                  <div className="relative">
+                    <label htmlFor="avatar-upload" className="cursor-pointer">
+                      <Avatar
+                        alt={userDetails.userName || userName}
+                        src={`http://localhost:5000${userDetails.image}` || userImage || "https://avatars.githubusercontent.com/u/583231?v=4"}
+                        className= 'rounded-full border-2 border-blue-500'
+                        sx={{ width: 160, height: 160 }}
+                      />
+                    </label>
+                    <input id="avatar-upload" type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }}/>
+                  </div>
                   <div className="w-full">
                     <Typography variant="h4" component="h1" className="text-blue-600 font-bold">
                       {userDetails.userName || userName}
@@ -104,9 +139,10 @@ export default function ProfilePage() {
 
                 <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
                 {activeTab === "profileDetails" && <ProfileDetails userDetails={userDetails} userRole={userRole} />}
-                {/* {activeTab === "projectDocuments" && <ProjectReporting projectId={projectId} />} */}
-                {/* {activeTab === "projectTreasure" && <ProjectBudgetReport projectId={projectId} />} */}
+                {activeTab === "gmAttendance" && <GMAttendance userId={userId} />} 
+                {activeTab === "projectAttendance" && <ProjectAttendance userId={userId} />} 
               </div>
+              <ProfileEditForm open={isEditing} onClose={() => setIsEditing(false)} userDetails={userDetails} setUserDetails={setUserDetails} onSave={handleSaveChanges} />
             </div>
           </RoleBasedLayout>
         );

@@ -4,9 +4,8 @@ import React, { useMemo } from 'react';
 const ProfileTabs = ({ activeTab, setActiveTab }) => {
   const tabs = useMemo(() => ({
     profileDetails: "Profile Details",
-    projectDocuments: "Documents",
-    projectTreasure: "Treasure",
-    projectITEditorial: "IT & Editorial",
+    gmAttendance: "General Meeting Attendance",
+    projectAttendance: "Project Attendance",
   }), []);
 
   return (

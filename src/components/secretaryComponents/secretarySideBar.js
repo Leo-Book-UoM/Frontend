@@ -61,10 +61,12 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
     },
     [isOpen, showText, pathname]
   );
+  const userImage = sessionStorage.getItem("image");
+  console.log("userImage from session:", userImage);
 
   return (
     <AuthWrapper>
-      {(userName, userRole,  userImage) => {
+      {(userName, userRole) => {
         const navItems = [
           { icon: BsFillBoxFill, label: "Dashboard", href: `/${userRole?.toLowerCase()}Dashboard` },
           { icon: FaFolderOpen, label: "Project Reports", href: `/projectReports` },
@@ -79,7 +81,6 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
         const settingsItems = [
           { icon: RiLogoutCircleLine, label: "Logout", href: "/logout" },
         ];
-
         return (
           <div className="flex">
             <div
@@ -90,20 +91,22 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
               <div className="overflow-y-auto h-full">
                 {/* Profile Section */}
                 <div className="flex items-center p-2 space-x-4">
-                  <img
-                    src={
-                      userImage ||
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpeEqDZn3rbSqRRIhJs35bhFu-HQt5U0T74L_Xhzdaq6VKLkZlNHSvnxxBLDuhLvSPVM&usqp=CAU"
-                    }
-                    alt="profile"
-                    onError={(e) =>
-                      (e.target.src =
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpeEqDZn3rbSqRRIhJs35bhFu-HQt5U0T74L_Xhzdaq6VKLkZlNHSvnxxBLDuhLvSPVM&usqp=CAU")
-                    }
-                    className={`${
-                      isOpen ? "w-12 h-12 mb-0" : "w-10 h-10 mb-8"
-                    } transition-transform duration-500 rounded-full border-2 border-blue-500`}
-                  />
+                <img
+                  src={
+                    userImage
+                      ? userImage
+                      : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpeEqDZn3rbSqRRIhJs35bhFu-HQt5U0T74L_Xhzdaq6VKLkZlNHSvnxxBLDuhLvSPVM&usqp=CAU"
+                  }
+                  alt="profile"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpeEqDZn3rbSqRRIhJs35bhFu-HQt5U0T74L_Xhzdaq6VKLkZlNHSvnxxBLDuhLvSPVM&usqp=CAU";
+                  }}
+                  className={`${
+                    isOpen ? "w-12 h-12 mb-0" : "w-10 h-10 mb-8"
+                  } transition-transform duration-500 rounded-full border-2 border-blue-500`}
+                />
 
                   {isOpen && (
                     <div

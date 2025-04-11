@@ -1,13 +1,13 @@
 import React from "react";
-import SecretarySideBar from "../secretaryComponents/secretarySideBar";
+import DirectorSideBar from "../sidebars/directorSideBar";
 import { useState } from "react";
 
-const MainLayout = ({ children }) => {
+const DirectorLayout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   return(
     <div className="flex h-screen">
-      <SecretarySideBar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
+      <DirectorSideBar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
 
       <div className={`flex flex-col flex-1 transition-all  duration-700  bg-gray-900 ${
         isSidebarOpen ? 'ml-64' : "ml-20"} flex-1`}>
@@ -20,4 +20,4 @@ const MainLayout = ({ children }) => {
   );
 };
 
-export default MainLayout;
+export default DirectorLayout;

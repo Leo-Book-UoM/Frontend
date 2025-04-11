@@ -26,6 +26,19 @@ const HomePage = () => {
     }
   };
 
+  const fetchMyProjects = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/myProjects/${userId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch projects");
+      }
+      const data = await response.json();
+      setProject(data);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
   }, []);

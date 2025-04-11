@@ -1,8 +1,8 @@
 import React from "react";
-import PresidentSidebar from "../presidentComponents/presidentSideBar";
+import PresidentSidebar from "../sidebars/presidentSideBar";
 import { useState } from "react";
 
-const MainLayout = ({ children }) => {
+const PresidentLayout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   return(
@@ -20,4 +20,4 @@ const MainLayout = ({ children }) => {
   );
 };
 
-export default MainLayout;
+export default PresidentLayout;

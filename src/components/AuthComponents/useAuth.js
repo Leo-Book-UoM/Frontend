@@ -22,7 +22,9 @@ const useAuth = () => {
           setUserName(data.userName);
           setUserRole(data.roleName);
           setUserId(data.userId);
-          setUserImage(data.userImage);
+          setUserImage(data.image);
+          sessionStorage.setItem("image", `http://localhost:5000${data.image}`);
+          sessionStorage.setItem("userId",userId)
         } else {
           router.push("/");
         }
@@ -38,8 +40,8 @@ const useAuth = () => {
   }, [router]);
 
   useEffect(() => {
-    if (!userRole) return;
-
+    if (!userRole || loading) return;
+  
     const roleRoutes = {
       President: {
         default: "/presidentDashboard",
@@ -47,16 +49,31 @@ const useAuth = () => {
       },
       Secretary: {
         default: "/secretaryDashboard",
-        allowedPaths: ["/profile", "/secretaryDashboard", "/projectAttribute", "/projectReports"],
+        allowedPaths: ["/profile", "/secretaryDashboard", "/projectAttribute", "/projectReports", "/clubMembership"],
       },
+      Treasure: {
+        default: "/treasureDashboard",
+        allowedPaths: ["/profile", "/treasureDashboard", "/projectAttribute", "/projectReports", "/clubMembership"],
+      },
+      Director: {
+        default: "/directorDashboard",
+        allowedPaths: ["/profile", "/directorDashboard","/projectContent", "/myProjects", "/meetings", "/projectPlaning"],
+      }
     };
-
+  
     const roleConfig = roleRoutes[userRole];
-
-    if (roleConfig && !roleConfig.allowedPaths.some((path) => pathname.startsWith(path))) {
-      router.push(roleConfig.default);
+  
+    // Check if user is on an unauthorized path
+    const isAllowed = roleConfig.allowedPaths.some((path) => pathname.startsWith(path));
+  
+    if (!isAllowed) {
+  
+      if (pathname !== roleConfig.default) {
+        router.push(roleConfig.default);
+      }
     }
-  }, [userRole, pathname, router]);
+  }, [userRole, loading, pathname, router]);
+  
 
   return {
     userName,

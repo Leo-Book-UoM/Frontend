@@ -1,16 +1,15 @@
 import Link from 'next/link';
 import React, { useMemo } from 'react';
 
-const CourseTabs = ({ activeTab, setActiveTab }) => {
+const ProfileTabs = ({ activeTab, setActiveTab }) => {
   const tabs = useMemo(() => ({
-    assignAttribute: "Assign Attributes",
-    // projectDocuments: "Assign History",
-    viewAttribute: "View Attributes",
-    projectITEditorial: "Graphical Representation",
+    profileDetails: "Profile Details",
+    gmAttendance: "General Meeting Attendance",
+    projectAttendance: "Project Attendance",
   }), []);
 
   return (
-    <div className="bg-gray-900 text-white px-8 py-5 flex space-x-6 sticky top-0 z-50">
+    <div className="bg-gray-900 text-white px-8 py-2 flex space-x-6 sticky top- -inset-6 z-50">
       {Object.entries(tabs).map(([tab, label]) => (
         <button
           key={tab}
@@ -26,4 +25,4 @@ const CourseTabs = ({ activeTab, setActiveTab }) => {
   );
 };
 
-export default React.memo(CourseTabs);
+export default React.memo(ProfileTabs);

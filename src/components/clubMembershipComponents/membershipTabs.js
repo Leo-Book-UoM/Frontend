@@ -3,9 +3,9 @@ import React, { useMemo } from 'react';
 
 const CourseTabs = ({ activeTab, setActiveTab }) => {
   const tabs = useMemo(() => ({
-    assignAttribute: "Assign Attributes",
-    // projectDocuments: "Assign History",
-    viewAttribute: "View Attributes",
+    projectContent: "Current Membership",
+    projectDocuments: "Membership History",
+    projectTreasure: "View Membership",
     projectITEditorial: "Graphical Representation",
   }), []);
 

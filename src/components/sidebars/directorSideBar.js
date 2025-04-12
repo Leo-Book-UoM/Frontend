@@ -4,11 +4,10 @@ import {
   FaArrowLeft, FaHeart, FaLightbulb, FaFolderOpen, FaHandsHelping,
 } from "react-icons/fa";
 import { BsFillBoxFill } from "react-icons/bs";
-import { SiFiles } from "react-icons/si";
 import { GiFamilyTree } from "react-icons/gi";
-import { IoSettings, IoPersonAdd } from "react-icons/io5";
+import { IoPersonAdd , IoFootsteps} from "react-icons/io5";
 import { RiLogoutCircleLine } from "react-icons/ri";
-import { MdCoPresent } from "react-icons/md";
+import { MdCoPresent, MdGroups2 } from "react-icons/md";
 import { LuBookMarked } from "react-icons/lu";
 import Link from "next/link";
 import AuthWrapper from "../authWrapper";
@@ -61,15 +60,17 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
     },
     [isOpen, showText, pathname]
   );
+  const userImage = sessionStorage.getItem("image");
+  console.log("userImage from session:", userImage);
 
   return (
     <AuthWrapper>
-      {(userName, userRole,  userImage) => {
+      {(userName, userRole) => {
         const navItems = [
           { icon: BsFillBoxFill, label: "Dashboard", href: `/${userRole?.toLowerCase()}Dashboard` },
-          { icon: FaFolderOpen, label: "Project Reports", href: `/projectReports` },
-          { icon: MdCoPresent, label: "Project Proposals", href: "/projectProposals" },
-          { icon: LuBookMarked, label: "Flyers & PR", href: "/forum" },
+          { icon: FaFolderOpen, label: "My Projects", href: `/myProjects` },
+          { icon: MdGroups2, label: "Meetings", href: "/meetings" },
+          { icon: IoFootsteps, label: "Project Planing", href: "/projectPlaning" },
           { icon: FaHandsHelping, label: "Requests", href: "/requests" },
           { icon: IoPersonAdd, label: "Add Member", href: "/add-member" },
           { icon: FaLightbulb, label: "Project Ideas", href: "/project-ideas" },
@@ -79,7 +80,6 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
         const settingsItems = [
           { icon: RiLogoutCircleLine, label: "Logout", href: "/logout" },
         ];
-
         return (
           <div className="flex">
             <div
@@ -90,20 +90,22 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
               <div className="overflow-y-auto h-full">
                 {/* Profile Section */}
                 <div className="flex items-center p-2 space-x-4">
-                  <img
-                    src={
-                      userImage ||
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpeEqDZn3rbSqRRIhJs35bhFu-HQt5U0T74L_Xhzdaq6VKLkZlNHSvnxxBLDuhLvSPVM&usqp=CAU"
-                    }
-                    alt="profile"
-                    onError={(e) =>
-                      (e.target.src =
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpeEqDZn3rbSqRRIhJs35bhFu-HQt5U0T74L_Xhzdaq6VKLkZlNHSvnxxBLDuhLvSPVM&usqp=CAU")
-                    }
-                    className={`${
-                      isOpen ? "w-12 h-12 mb-0" : "w-10 h-10 mb-8"
-                    } transition-transform duration-500 rounded-full border-2 border-blue-500`}
-                  />
+                <img
+                  src={
+                    userImage
+                      ? userImage
+                      : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpeEqDZn3rbSqRRIhJs35bhFu-HQt5U0T74L_Xhzdaq6VKLkZlNHSvnxxBLDuhLvSPVM&usqp=CAU"
+                  }
+                  alt="profile"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpeEqDZn3rbSqRRIhJs35bhFu-HQt5U0T74L_Xhzdaq6VKLkZlNHSvnxxBLDuhLvSPVM&usqp=CAU";
+                  }}
+                  className={`${
+                    isOpen ? "w-12 h-12 mb-0" : "w-10 h-10 mb-8"
+                  } transition-transform duration-500 rounded-full border-2 border-blue-500`}
+                />
 
                   {isOpen && (
                     <div

@@ -2,17 +2,18 @@
 import React, { useEffect, useState } from "react";
 import SecretaryLayout from "@/components/layout/secrataryLayout";
 import AuthWrapper from "@/components/authWrapper";
-import ProjectAttributeHandle from "@/components/projectAttributeComponents/setProjectAttribute";
-import projectTabs from "@/components/projectTabs";
-import ProjectTabs from "@/components/projectAttributeComponents/attributeTabs";
-
+import ProjectAttributeHandle from "@/components/projectAttributeComponents/setProjectAttribute";;
+import AttributeTabs from "@/components/projectAttributeComponents/attributeTabs";
+import ViewAttribute from "@/components/projectAttributeComponents/viewAttribute";
 
 function Page() {
-const [activeTab, setActiveTab] = useState("projectContent");
+const [activeTab, setActiveTab] = useState("assignAttribute");
   return (
         <SecretaryLayout>
-<ProjectTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-<ProjectAttributeHandle/>
+          <AttributeTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          {activeTab === "assignAttribute" && <ProjectAttributeHandle/>}
+          {/* {activeTab === "gmAttendance" && <GMAttendance userId={userId} />}  */}
+          {activeTab === "viewAttribute" && <ViewAttribute/>} 
         </SecretaryLayout>
   );
 }

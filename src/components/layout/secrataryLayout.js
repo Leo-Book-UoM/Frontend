@@ -1,8 +1,8 @@
 import React from "react";
-import SecretarySideBar from "../secretaryComponents/secretarySideBar";
+import SecretarySideBar from "../sidebars/secretarySideBar";
 import { useState } from "react";
 
-const MainLayout = ({ children }) => {
+const SecretaryLayout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   return(
@@ -20,4 +20,4 @@ const MainLayout = ({ children }) => {
   );
 };
 
-export default MainLayout;
+export default SecretaryLayout;

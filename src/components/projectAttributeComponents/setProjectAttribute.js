@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Select, MenuItem, Button } from "@mui/material";
 import SettedLastMonthProjectAttributes from './MonthlyProjectAttributeTable';
+import { grey } from "@mui/material/colors";
 
 const ProjectAttributeHandle = () => {
   const [projects, setProjects] = useState([]);
@@ -97,18 +98,18 @@ const ProjectAttributeHandle = () => {
   }, []);
 
   return (
-    <Paper sx={{ padding: 3, borderRadius: 2, boxShadow: 3 }}>
+    <Paper sx={{ padding: 3, borderRadius: 2, boxShadow: 3, bgcolor: "#263238" }}>
       <Typography variant="h5" color="primary" gutterBottom>
         Monthly Project Summary
       </Typography>
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} sx={{ bgcolor: grey[300] }}>
+        <Table sx={{ color: "#1a1a1a" }}>
           <TableHead>
             <TableRow>
               <TableCell align="center">Project</TableCell>
               <TableCell align="center">Attribute 1</TableCell>
               <TableCell align="center">Attribute 2</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell align="center"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

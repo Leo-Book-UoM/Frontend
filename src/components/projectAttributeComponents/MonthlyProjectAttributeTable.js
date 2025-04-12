@@ -57,7 +57,7 @@ const ProjectTable = (fetchProjectNames , viewAssignedAttributes) => {
     return (
         <TableContainer component={Paper} sx={{ maxWidth: "90%", margin: "auto", mt: 4 }}>
             <Table sx={{ minWidth: 650 }} aria-label="dynamic project table">
-                <TableHead>
+                <TableHead sx={{ bgcolor: "#03a9f4"}}>
                     <TableRow>
                         <TableCell sx={{ fontWeight: "bold", backgroundColor: "#1976d2", color: "white" }}>
                             Project Name

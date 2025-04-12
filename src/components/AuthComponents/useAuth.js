@@ -24,6 +24,7 @@ const useAuth = () => {
           setUserId(data.userId);
           setUserImage(data.image);
           sessionStorage.setItem("image", `http://localhost:5000${data.image}`);
+          sessionStorage.setItem("userId",userId)
         } else {
           router.push("/");
         }
@@ -56,7 +57,7 @@ const useAuth = () => {
       },
       Director: {
         default: "/directorDashboard",
-        allowedPaths: ["/profile", "/directorDashboard","/projectContent"],
+        allowedPaths: ["/profile", "/directorDashboard","/projectContent", "/myProjects", "/meetings", "/projectPlaning"],
       }
     };
   

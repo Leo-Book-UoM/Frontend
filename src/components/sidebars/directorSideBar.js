@@ -4,11 +4,10 @@ import {
   FaArrowLeft, FaHeart, FaLightbulb, FaFolderOpen, FaHandsHelping,
 } from "react-icons/fa";
 import { BsFillBoxFill } from "react-icons/bs";
-import { SiFiles } from "react-icons/si";
 import { GiFamilyTree } from "react-icons/gi";
-import { IoSettings, IoPersonAdd } from "react-icons/io5";
+import { IoPersonAdd , IoFootsteps} from "react-icons/io5";
 import { RiLogoutCircleLine } from "react-icons/ri";
-import { MdCoPresent } from "react-icons/md";
+import { MdCoPresent, MdGroups2 } from "react-icons/md";
 import { LuBookMarked } from "react-icons/lu";
 import Link from "next/link";
 import AuthWrapper from "../authWrapper";
@@ -69,9 +68,9 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
       {(userName, userRole) => {
         const navItems = [
           { icon: BsFillBoxFill, label: "Dashboard", href: `/${userRole?.toLowerCase()}Dashboard` },
-          { icon: FaFolderOpen, label: "My Projects", href: `/projectReports` },
-          { icon: MdCoPresent, label: "Project Proposals", href: "/projectProposals" },
-          { icon: LuBookMarked, label: "Flyers & PR", href: "/forum" },
+          { icon: FaFolderOpen, label: "My Projects", href: `/myProjects` },
+          { icon: MdGroups2, label: "Meetings", href: "/meetings" },
+          { icon: IoFootsteps, label: "Project Planing", href: "/projectPlaning" },
           { icon: FaHandsHelping, label: "Requests", href: "/requests" },
           { icon: IoPersonAdd, label: "Add Member", href: "/add-member" },
           { icon: FaLightbulb, label: "Project Ideas", href: "/project-ideas" },

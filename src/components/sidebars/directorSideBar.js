@@ -17,6 +17,7 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
   const [showText, setShowText] = useState(false);
   const resizeListener = useRef(null);
   const pathname = usePathname();
+  const [userImage, setUserImage] = useState(null);
 
   useEffect(() => {
     resizeListener.current = () => {
@@ -60,8 +61,13 @@ const SideBar = React.memo(({ isOpen, setIsOpen }) => {
     },
     [isOpen, showText, pathname]
   );
-  const userImage = sessionStorage.getItem("image");
-  console.log("userImage from session:", userImage);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const image = sessionStorage.getItem("image");
+      setUserImage(image);
+      console.log("userImage from session:", image);
+    }
+  }, []);
 
   return (
     <AuthWrapper>

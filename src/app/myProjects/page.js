@@ -11,7 +11,7 @@ import AuthWrapper from "@/components/authWrapper";
 const HomePage = () => {
   const [project, setProject] = useState([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState(null);
   const router = useRouter();
 
   const fetchMyProjects = async (userId) => {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import uri from '@/api/uri';
 
 const useAuth = () => {
   const [userName, setUserName] = useState(null);
@@ -13,7 +14,7 @@ const useAuth = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/authuser", {
+        const response = await fetch(`${uri}/authuser`, {
           credentials: "include",
         });
 
@@ -23,7 +24,7 @@ const useAuth = () => {
           setUserRole(data.roleName);
           setUserId(data.userId);
           setUserImage(data.image);
-          sessionStorage.setItem("image", `http://localhost:5000${data.image}`);
+          sessionStorage.setItem("image", `${uri}${data.image}`);
           sessionStorage.setItem("userId",userId)
         } else {
           router.push("/");
@@ -45,7 +46,7 @@ const useAuth = () => {
     const roleRoutes = {
       President: {
         default: "/presidentDashboard",
-        allowedPaths: ["/profile/president", "/presidentDashboard"],
+        allowedPaths: ["/profile", "/presidentDashboard"],
       },
       Secretary: {
         default: "/secretaryDashboard",

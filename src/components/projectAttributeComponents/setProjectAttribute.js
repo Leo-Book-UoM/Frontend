@@ -102,14 +102,14 @@ const ProjectAttributeHandle = () => {
       <Typography variant="h5" color="primary" gutterBottom>
         Monthly Project Summary
       </Typography>
-      <TableContainer component={Paper} sx={{ bgcolor: grey[300] }}>
+      <TableContainer component={Paper} sx={{ bgcolor: grey[300] }} >
         <Table sx={{ color: "#1a1a1a" }}>
-          <TableHead>
+          <TableHead sx={{ bgcolor: "#2196f3"}}>
             <TableRow>
-              <TableCell align="center">Project</TableCell>
-              <TableCell align="center">Attribute 1</TableCell>
-              <TableCell align="center">Attribute 2</TableCell>
-              <TableCell align="center"></TableCell>
+              <TableCell align="center" sx={{color:"white", fontWeight:"bold"}}>Project</TableCell>
+              <TableCell align="center" sx={{color:"white", fontWeight:"bold"}}>Attribute 1</TableCell>
+              <TableCell align="center" sx={{color:"white", fontWeight:"bold"}}>Attribute 2</TableCell>
+              <TableCell align="center" sx={{color:"white", fontWeight:"bold"}}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -155,6 +155,7 @@ const ProjectAttributeHandle = () => {
                     <Button
                     variant="contained"
                     color="primary"
+                    sx={{bgcolor: "#2196f3"}}
                     onClick={() => {confirmAttributeSelection(project.projectId) ; setViewAssignedAttributes(false)}}
                     >
                       Confirm

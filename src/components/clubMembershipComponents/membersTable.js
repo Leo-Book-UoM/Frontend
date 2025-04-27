@@ -4,7 +4,7 @@ import { Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,Typog
 import AddItemButton from '@/components/addItemButton';
 import AddMemberForm from './addMemberForm';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DeleteMemberButton from '../deleteButton';
+import DeleteMemberButton from './deleteButton';
 
 export default function MembersTable() {
   const [members, setMembers] = useState([]);

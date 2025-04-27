@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; 
 import api from '@/api/authAPI';
+import uri from '@/api/uri';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -45,12 +46,11 @@ export default function Login() {
       setLoading(true)
       try {
         const response = await api.post(
-          'http://localhost:5000/api/login',
-          { email, password },
+          `${uri}/login`,          { email, password },
         {withCredentials: true}
       );
         if (response.status === 200){
-             const userResponse = await fetch("http://localhost:5000/api/authuser", {
+             const userResponse = await fetch(`${uri}/authuser`, {
               credentials: "include",
             });
           

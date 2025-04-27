@@ -9,6 +9,7 @@ import PresidentMonthlyProjectCard from "@/components/presidentComponents/presid
 import SecretaryMeetingParticipentsCard from "@/components/secretaryComponents/secretaryMeetingStatusCard";
 import DistrictEventCard from "@/components/secretaryComponents/districtEventCard";
 import MembershipCard from "@/components/secretaryComponents/membershipcard";
+import uri from '@/api/uri';
 
 function Page() {
   const [projectReportStatus, setProjectReportStatus] = useState({
@@ -31,7 +32,7 @@ function Page() {
 
   const fetchProjectReportingStatus = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/getProjectReportingStatus`);
+      const response = await fetch(`${uri}/getProjectReportingStatus`);
       if (!response.ok) throw new Error("Failed to fetch project reported status");
 
       const data = await response.json();
@@ -44,7 +45,7 @@ function Page() {
 
   const fetchProjectAttributeCounts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/attributeCounts");
+      const response = await fetch(`${uri}/attributeCounts `);
       if (!response.ok) throw new Error("Failed to fetch project attribute count");
 
       const data = await response.json();
@@ -57,7 +58,7 @@ function Page() {
 
   const fetchMonthlyProjectCount = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/monthlyProjectCount");
+      const response = await fetch(`${uri}/monthlyProjectCount`);
       if (!response.ok) throw new Error("Failed to fetch month project count");
 
       const data = await response.json();
@@ -72,7 +73,7 @@ function Page() {
 
   const fetchUpcommingProjectCount = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/upcommingprojects");
+      const response = await fetch(`${uri}/upcommingprojects`);
       if (!response.ok){ throw new Error("Failed to fetch upcoming project count");}
 
       const data = await response.json();
@@ -85,7 +86,7 @@ function Page() {
 
   const fetchMonthlyGMParticipents = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/getGMParticipentsCount");
+      const response = await fetch(`${uri}/getGMParticipentsCount`);
       if (!response.ok) {
         throw new Error("Failed to fetch Monthly GM participants");
       }
@@ -106,7 +107,7 @@ function Page() {
 
   const fetchDestrictEventDetailes = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/getMonthDistrictEvent`);
+      const response = await fetch(`${uri}/getMonthDistrictEvent`);
       if (!response.ok) throw new Error("Failed to fetch Evend detailes");
 
       const data = await response.json();
@@ -119,7 +120,7 @@ function Page() {
 
   const fetchMembershipDetailes = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/getMembershipCounts`);
+      const response = await fetch(`${uri}/getMembershipCounts`);
       if (!response.ok) throw new Error("Failed to fetch membership detailes");
 
       const data = await response.json();

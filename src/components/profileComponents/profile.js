@@ -9,6 +9,7 @@ import ProfileDetails from "./profileDetails";
 import GMAttendance from "./gmAttendance";
 import ProjectAttendance from "./projectAttendance";
 import ProfileEditForm from "./profileEditForm";
+import uri from "@/api/uri";
 
 export default function ProfilePage() {
   const [userName, setUserName] = useState("");
@@ -35,7 +36,7 @@ export default function ProfilePage() {
     const fetchDetails = async () => {
       if (!userId) return;
       try {
-        const res = await fetch(`http://localhost:5000/api/getUserDetails/${userId}`);
+        const res = await fetch(`${uri}/getUserDetails/${userId}`);
         if (res.ok) {
           const data = await res.json();
           setUserDetails(data);
@@ -63,7 +64,7 @@ export default function ProfilePage() {
     formData.append("image", file);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/updateProPic/${userId}`, {
+      const res = await fetch(`${uri}/updateProPic/${userId}`, {
         method: "PATCH",
         body: formData,
       });

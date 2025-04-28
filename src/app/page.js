@@ -50,7 +50,7 @@ export default function Login() {
         {withCredentials: true}
       );
         if (response.status === 200){
-             const userResponse = await fetch(`${uri}/authUser`, {
+             const userResponse = await fetch(`${uri}/authuser`, {
               credentials: "include",
             });
           

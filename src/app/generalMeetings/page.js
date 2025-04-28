@@ -5,7 +5,7 @@ import ProjectCard from "../../components/projectCard";
 import AddItemButton from "../../components/addItemButton";
 import CreateGeneralMeetingForm from "../../components/generalMeetingCreateForm";
 import { useRouter } from "next/navigation";
-
+import uri from "@/api/uri"
 
 const HomePage = () => {
   const [generalMeeting, setGeneralMeeting] = useState([]);
@@ -14,7 +14,7 @@ const HomePage = () => {
 
   const fetchGeneralMeetings = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/getAllGeneralMeetings");
+      const response = await fetch(`${uri}/getAllGeneralMeetings`);
       if (!response.ok) {
         throw new Error("Failed to fetch projects");
       }

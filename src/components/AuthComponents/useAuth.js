@@ -24,7 +24,7 @@ const useAuth = () => {
           setUserRole(data.roleName);
           setUserId(data.userId);
           setUserImage(data.image);
-          sessionStorage.setItem("image", `${uri}${data.image}`);
+          sessionStorage.setItem("image", `http://localhost:5000${data.image}`);
           sessionStorage.setItem("userId",userId)
         } else {
           router.push("/");

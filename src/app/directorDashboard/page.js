@@ -7,6 +7,7 @@ import CreateProjectForm from "../../components/projectComponents/projectCreatio
 import { useRouter } from "next/navigation";
 import DisplayUserName from "@/components/displayUserName";
 import AuthWrapper from "@/components/authWrapper";
+import uri from "@/api/uri";
 
 const HomePage = () => {
   const [project, setProject] = useState([]);
@@ -15,7 +16,7 @@ const HomePage = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/projects");
+      const response = await fetch(`${uri}/projects`);
       if (!response.ok) {
         throw new Error("Failed to fetch projects");
       }
@@ -28,7 +29,7 @@ const HomePage = () => {
 
   const fetchMyProjects = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/myProjects/${userId}`);
+      const response = await fetch(`${uri}/myProjects/${userId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch projects");
       }

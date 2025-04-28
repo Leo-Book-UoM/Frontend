@@ -71,7 +71,7 @@ export default function Login() {
                     router.push("/");
                 }
             }else{
-              router.push("/"); 
+              router.push("/directorDashboard"); 
             }
           }else {
             alert(response.data.message);
